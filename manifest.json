@@ -1,0 +1,42 @@
+{
+    "manifest_version": 2,
+    "name": "Inject JS and CSS",
+    "description": "This extension injects custom JS and CSS into specific URLs",
+    "version": "1.0",
+    "permissions": ["activeTab", "declarativeContent", "<all_urls>"],
+    "background": {
+        "scripts": ["inject.js"],
+        "persistent": false
+    },
+    "web_accessible_resources": [
+        "img/type/carport.png",
+        "img/type/floating.png",
+        "img/type/ground.png",
+        "img/type/rooftop.png",
+        "img/flags/bulgaria.png",
+        "img/flags/spain.png",
+        "img/flags/poland.png",
+        "img/flags/germany.png",
+        "img/flags/luxembourg.png",
+        "img/flags/italy.png",
+        "img/flags/israel.png",
+        "img/flags/usa.png"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["https://app-eu1.hubspot.com/*"],
+            "js": ["directory1/script.js"]
+        },
+        {
+            "matches": ["https://example.com/*"],
+            "js": ["directory2/script.js"]
+        },
+        {
+            "matches": ["https://test.com/*"],
+            "js": ["directory3/script.js"]
+        }
+    ],
+    "page_action": {
+        "default_popup": "popup.html"
+    }
+}
