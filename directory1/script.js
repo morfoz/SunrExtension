@@ -227,10 +227,19 @@ function waitHelpToLoad() {
       }
   }, 500); // check every 500ms
 }
-waitMenuToLoad();
-waitCardToLoad();
-waitHelpToLoad();
 
+function startAllIntervals() {
+  waitMenuToLoad();
+  waitCardToLoad();
+  waitHelpToLoad();
+}
+
+// Fetch the 'injectionEnabled' value
+chrome.storage.local.get('injectionEnabled', function(data) {
+  if (data.injectionEnabled) {
+      startAllIntervals();
+  }
+});
 
 // add a button to the html
 // change the regex
