@@ -1,6 +1,6 @@
 :root {
-  --primaryColor: #884A39;
-  --secondaryColor: #C28155;
+  --primaryColor: #EF6D23;
+  --secondaryColor: #F7A473;
 }
 #hs-nav-v4 a{
 	background-color: var(--primaryColor) !important;

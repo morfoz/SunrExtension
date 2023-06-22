@@ -1,55 +1,3 @@
-function displayLoadingScreen() {
-  var existingOverlay = document.getElementById('loadingOverlay');
-
-  if (!existingOverlay) {
-      // Create overlay div
-      var overlay = document.createElement('div');
-      overlay.id = 'loadingOverlay'; // Add id to the overlay
-      overlay.style.position = 'fixed';
-      overlay.style.top = '0';
-      overlay.style.left = '0';
-      overlay.style.width = '100%';
-      overlay.style.height = '100%';
-      overlay.style.background = '#fff';
-      overlay.style.display = 'flex';
-      overlay.style.justifyContent = 'center';
-      overlay.style.alignItems = 'center';
-      overlay.style.zIndex = '9999'; // To make sure the overlay is above everything else
-
-      // Create loading spinner
-      var spinner = document.createElement('div');
-      spinner.style.border = '16px solid #f3f3f3'; 
-      spinner.style.borderTop = '16px solid #884A39'; 
-      spinner.style.borderRadius = '50%'; 
-      spinner.style.width = '120px'; 
-      spinner.style.height = '120px'; 
-      spinner.style.animation = 'spin 2s linear infinite'; 
-
-      // Add spinner animation
-      var style = document.createElement('style');
-      style.innerHTML = `
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `;
-      document.head.appendChild(style);
-
-      // Append spinner to overlay and overlay to body
-      overlay.appendChild(spinner);
-      document.body.appendChild(overlay);
-  }
-}
-
-
-function removeLoadingScreen() {
-  var overlay = document.getElementById('loadingOverlay');
-  if (overlay) {
-      overlay.remove();
-  }
-}
-
-
 function addCustomLogo() {
   var logos = Array.from(document.getElementsByClassName('nav-logo'));
   logos.forEach(function (logo) {
@@ -201,7 +149,6 @@ function replaceTags() {
 }
 
 function replaceFlagEmojis() {
-  // Define the lookup table for emoji and image pairs
   var emojiImagePairs = {
     '🇧🇬': 'img/flags/bulgaria.png',
     '🇪🇸': 'img/flags/spain.png',
@@ -213,21 +160,41 @@ function replaceFlagEmojis() {
     '🇺🇸': 'img/flags/usa.png'
   };
 
-  // Select all elements
   var elements = document.querySelectorAll('body *');
+
   elements.forEach(function (element) {
-    var html = element.innerHTML;
+    Array.from(element.childNodes).forEach(function (child) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        for (var emoji in emojiImagePairs) {
+          var index = child.nodeValue.indexOf(emoji);
+          if (index !== -1) {
+            var imgElement = document.createElement('img');
+            imgElement.src = chrome.runtime.getURL(emojiImagePairs[emoji]);
+            imgElement.style.height = '18px';
+            imgElement.style.verticalAlign = 'middle';
+            
+            var textBefore = child.nodeValue.substring(0, index);
+            var textAfter = child.nodeValue.substring(index + emoji.length);
+            
+            if (textBefore.length > 0) {
+              element.insertBefore(document.createTextNode(textBefore), child);
+            }
 
-    // Replace the emoji with an img element
-    for (var emoji in emojiImagePairs) {
-      var imgElement = '<img src="' + chrome.runtime.getURL(emojiImagePairs[emoji]) + '"style="height: 18px;vertical-align: middle;">';
-      html = html.replace(new RegExp(emoji, 'g'), imgElement);
-    }
+            element.insertBefore(imgElement, child);
 
-    // Update the innerHTML of the element
-    element.innerHTML = html;
+            if (textAfter.length > 0) {
+              child.nodeValue = textAfter;
+            } else {
+              element.removeChild(child);
+            }
+          }
+        }
+      }
+    });
   });
 }
+
+
 
 function waitMenuToLoad() {
   var checkExist = setInterval(function () {
@@ -243,9 +210,8 @@ function waitCardToLoad() {
   var checkExist = setInterval(function () {
     var elem = document.querySelector('[data-test-id="cdb-column-item"]');
     if (elem) {
-      clearInterval(checkExist);
       toggleDateDisplay();
-      replaceTags();
+      clearInterval(checkExist);
       
     }
   }, 500);
@@ -254,18 +220,18 @@ function waitHelpToLoad() {
   var checkExist = setInterval(function() {
       var elem = document.querySelector("#help-widget-toggle");
       if (elem) {
-          replaceTags();
           togglePowerDisplay();
+          replaceTags();
           replaceFlagEmojis();
-          removeLoadingScreen()
-          removeLoadingScreen()
           clearInterval(checkExist);
       }
   }, 500); // check every 500ms
 }
-displayLoadingScreen();
 waitMenuToLoad();
 waitCardToLoad();
 waitHelpToLoad();
 
-//removeLoadingScreen();
+
+// add a button to the html
+// change the regex
+// issue with the flags

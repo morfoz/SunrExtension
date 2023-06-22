@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "Inject JS and CSS",
-    "description": "This extension injects custom JS and CSS into specific URLs",
+    "name": "H'SunR",
+    "description": "CSS for H for sunR",
     "version": "1.0",
     "permissions": ["activeTab", "scripting"],
     "host_permissions": ["http://*/*", "https://*/*"],
