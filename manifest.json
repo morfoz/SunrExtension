@@ -1,26 +1,35 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Inject JS and CSS",
     "description": "This extension injects custom JS and CSS into specific URLs",
     "version": "1.0",
-    "permissions": ["activeTab", "declarativeContent", "<all_urls>"],
+    "permissions": ["activeTab", "scripting"],
+    "host_permissions": ["http://*/*", "https://*/*"],
     "background": {
-        "scripts": ["inject.js"],
-        "persistent": false
+        "service_worker": "inject.js"
+    },
+    "action": {
+        "default_popup": "popup.html"
     },
     "web_accessible_resources": [
-        "img/type/carport.png",
-        "img/type/floating.png",
-        "img/type/ground.png",
-        "img/type/rooftop.png",
-        "img/flags/bulgaria.png",
-        "img/flags/spain.png",
-        "img/flags/poland.png",
-        "img/flags/germany.png",
-        "img/flags/luxembourg.png",
-        "img/flags/italy.png",
-        "img/flags/israel.png",
-        "img/flags/usa.png"
+        {
+            "resources": [
+                "img/logo-sunr.png",
+                "img/type/carport.png",
+                "img/type/floating.png",
+                "img/type/ground.png",
+                "img/type/rooftop.png",
+                "img/flags/bulgaria.png",
+                "img/flags/spain.png",
+                "img/flags/poland.png",
+                "img/flags/germany.png",
+                "img/flags/luxembourg.png",
+                "img/flags/italy.png",
+                "img/flags/israel.png",
+                "img/flags/usa.png"
+            ],
+            "matches": ["<all_urls>"]
+        }
     ],
     "content_scripts": [
         {
@@ -35,8 +44,5 @@
             "matches": ["https://test.com/*"],
             "js": ["directory3/script.js"]
         }
-    ],
-    "page_action": {
-        "default_popup": "popup.html"
-    }
+    ]
 }

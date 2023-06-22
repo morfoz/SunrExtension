@@ -1,28 +1,36 @@
-chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([
-        {
-            conditions: [
-                new chrome.declarativeContent.PageStateMatcher({
-                    pageUrl: {urlMatches: '^https://app-eu1\\.hubspot\\.com/.*'}, // replace with the URL regex you want
-                })
-            ],
-            actions: [new chrome.declarativeContent.RequestContentScript({js: ['directory1/script.js'], css: ['directory1/style.css']})]
-        },
-        {
-            conditions: [
-                new chrome.declarativeContent.PageStateMatcher({
-                    pageUrl: {urlMatches: 'URL_REGEX_2'}, // replace with the URL regex you want
-                })
-            ],
-            actions: [new chrome.declarativeContent.RequestContentScript({js: ['directory2/script.js'], css: ['directory2/style.css']})]
-        },
-        {
-            conditions: [
-                new chrome.declarativeContent.PageStateMatcher({
-                    pageUrl: {urlMatches: 'URL_REGEX_3'}, // replace with the URL regex you want
-                })
-            ],
-            actions: [new chrome.declarativeContent.RequestContentScript({js: ['directory3/script.js'], css: ['directory3/style.css']})]
-        },
-    ]);
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete') {
+        const url = tab.url;
+
+        if (/^https:\/\/app-eu1\.hubspot\.com/.test(url)) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                files: ['directory1/script.js']
+            });
+            chrome.scripting.insertCSS({
+                target: { tabId: tabId },
+                files: ['directory1/style.css']
+            });
+        } 
+        else if (/^https:\/\/example\.com/.test(url)) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                files: ['directory2/script.js']
+            });
+            chrome.scripting.insertCSS({
+                target: { tabId: tabId },
+                files: ['directory2/style.css']
+            });
+        } 
+        else if (/^https:\/\/test\.com/.test(url)) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                files: ['directory3/script.js']
+            });
+            chrome.scripting.insertCSS({
+                target: { tabId: tabId },
+                files: ['directory3/style.css']
+            });
+        }
+    }
 });
