@@ -241,6 +241,4 @@ chrome.storage.local.get('injectionEnabled', function(data) {
   }
 });
 
-// add a button to the html
 // change the regex
-// issue with the flags

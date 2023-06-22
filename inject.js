@@ -5,7 +5,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                 const url = tab.url;
                 console.log("Injection enabled");
 
-                if (/^https:\/\/app-eu1\.hubspot\.com/.test(url)) {
+                if (/^https:\/\/app-eu1\.hubspot\.com\/.*\/26693160\/.*/.test(url)) {
                     console.log("Injecting into Hubspot");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },

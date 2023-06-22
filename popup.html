@@ -1,11 +1,74 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>Hubspot UX changer</h1>
-    <label>
-      Enable script and CSS injection:
-      <input type="checkbox" id="injection-checkbox" />
-    </label>
-    <script src="popup.js"></script>
-  </body>
+    <head>
+        <style>
+            body {
+                width: 300px;
+                font-family: Arial, sans-serif;
+                background: none;
+                margin: 0; /* Removes body margin */
+            }
+            .container {
+                background: #f5f5f5; /* Lighter grey */
+                
+            }
+            .signature {
+                background-color: #888; /* Slightly darker grey */
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 10px;
+            }
+            .signature p {
+                margin-top: 0;
+                margin-bottom: 10px;
+            }
+            .signature a {
+                color: #fff;
+            }
+            .logo-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+                font-size: 1.2em;
+            }
+            .logo-container p{
+                margin-bottom: 10px;
+            }
+            h1, label {
+                margin-bottom: 10px;
+            }
+            h1{
+                text-align-last: center;
+            }
+            .content{
+                padding: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="content">
+            <h1>Hubspot UX Changer</h1>
+                <label>
+                    <input type="checkbox" id="injection-checkbox"> Enable Injection (Then refresh the page)
+                </label>
+            </div>
+            <div class="signature">
+                
+                <p>In case of issues with the extension contact <a href="mailto:support@morfoz.fr">support@morfoz.fr</a></p>
+
+                <div class="logo-container">
+                    <p style="margin: 0;">Designed by&nbsp;</p>
+                    <a href="https://www.morfoz.fr" target="_blank">
+                        <img src="img/logo_morfoz.png" alt="Morfoz SASU logo" width="60px">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <script src="popup.js"></script>
+    </body>
 </html>
