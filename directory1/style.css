@@ -2,10 +2,10 @@
   --primaryColor: #EF6D23;
   --secondaryColor: #F7A473;
 }
-#hs-nav-v4 a{
+a[data-test-id="nav-settings"]{
 	background-color: var(--primaryColor) !important;
 }
-#hs-nav-v4 a:hover{
+a[data-test-id="nav-settings"]:hover{
     background-color: var(--secondaryColor) !important;
 }
 
