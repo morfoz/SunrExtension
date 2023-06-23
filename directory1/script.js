@@ -195,6 +195,43 @@ function replaceFlagEmojis() {
 }
 
 
+function toggleHeader() {
+  // Locate the header and filter bar
+  let header = document.querySelector('header');
+  let filterBar = document.querySelector('[data-onboarding="filter-bar"]');
+
+  // If the checkbox already exists, don't add it again
+  if (document.querySelector('#toggleHeader')) {
+      return;
+  }
+
+  // Create the checkbox and append it to the menu
+  let checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.id = 'toggleHeader';
+  checkbox.checked = false; // By default, the checkbox is not checked (header and filter bar are hidden)
+
+  let menu = document.querySelector('.primary-links');
+  menu.appendChild(checkbox);
+
+  // Create a label for the checkbox and append it to the menu
+  let label = document.createElement('label');
+  label.htmlFor = 'toggleHeader';
+  menu.appendChild(label);
+
+  // Hide the header and filter bar by default
+  header.style.display = 'none';
+  filterBar.style.display = 'none';
+
+  // Toggle the display of the header and filter bar when the checkbox is checked
+  checkbox.addEventListener('change', function() {
+      header.style.display = this.checked ? 'block' : 'none';
+      filterBar.style.display = this.checked ? 'block' : 'none';
+  });
+}
+
+
+document.addEventListener('DOMContentLoaded', toggleHeader);
 
 function waitMenuToLoad() {
   var checkExist = setInterval(function () {
@@ -212,7 +249,7 @@ function waitCardToLoad() {
     if (elem) {
       toggleDateDisplay();
       clearInterval(checkExist);
-      
+
     }
   }, 500);
 }
@@ -222,10 +259,11 @@ function waitHelpToLoad() {
       if (elem) {
           togglePowerDisplay();
           replaceTags();
+          toggleHeader();
           replaceFlagEmojis();
           clearInterval(checkExist);
       }
-  }, 500); // check every 500ms
+  }, 500);
 }
 
 function startAllIntervals() {
@@ -240,5 +278,3 @@ chrome.storage.local.get('injectionEnabled', function(data) {
       startAllIntervals();
   }
 });
-
-// change the regex

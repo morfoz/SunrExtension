@@ -2,10 +2,10 @@
   --primaryColor: #EF6D23;
   --secondaryColor: #F7A473;
 }
-a[data-test-id="nav-settings"]{
+a[data-test-id="nav-settings"], #nav-primary-home, .menu, #hs-nav-v4 .mobile .primary-links{
 	background-color: var(--primaryColor) !important;
 }
-a[data-test-id="nav-settings"]:hover{
+a[data-test-id="nav-settings"]:hover, #nav-primary-home:hover .menu:hover, .menu ul:hover{
     background-color: var(--secondaryColor) !important;
 }
 
@@ -82,4 +82,27 @@ a[data-test-id="nav-settings"]:hover{
 
 div[data-portal-hook="marketplace-menu"] {
     display: none;
+}
+
+/* in menu toggle header */
+#toggleHeader {
+  display: none;  /* Hide the checkbox */
+  width: 0;
+  height: 0;
+}
+
+#toggleHeader + label {
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+#toggleHeader + label:before {
+  content: ">";
+  transform: rotate(0deg);
+}
+
+#toggleHeader:checked + label:before {
+  content: "v";
 }
