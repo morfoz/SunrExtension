@@ -86,7 +86,7 @@ div[data-portal-hook="marketplace-menu"] {
 
 /* in menu toggle header */
 #toggleHeader {
-  display: none;  /* Hide the checkbox */
+  display: none;
   width: 0;
   height: 0;
 }
@@ -96,13 +96,14 @@ div[data-portal-hook="marketplace-menu"] {
   cursor: pointer;
   font-weight: bold;
   font-size: 18px;
+  vertical-align: middle;
+  margin-left: 40px;
 }
 
 #toggleHeader + label:before {
-  content: ">";
-  transform: rotate(0deg);
+  content: "Expand v";
 }
 
 #toggleHeader:checked + label:before {
-  content: "v";
+  content: "Retract >";
 }
