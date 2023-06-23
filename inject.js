@@ -3,9 +3,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         chrome.storage.local.get('injectionEnabled', (result) => {
             if (result.injectionEnabled) {
                 const url = tab.url;
-                console.log("Injection enabled");
 
-                if (/^https:\/\/app-eu1\.hubspot\.com\/.*\/26693160.*/.test(url)) {
+                if (url.includes("https://app-eu1.hubspot.com/") && url.includes("/26693160")) {
                     console.log("Injecting into Hubspot");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
@@ -16,7 +15,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         files: ['directory1/style.css']
                     });
                 } 
-                else if (/^https:\/\/example\.com/.test(url)) {
+                else if (url.includes("https://app-eu1.hubspot.com/") && url.includes("/25748774")) {
                     console.log("Injecting into Example");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
@@ -27,7 +26,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         files: ['directory2/style.css']
                     });
                 } 
-                else if (/^https:\/\/test\.com/.test(url)) {
+                else if (url.includes("https://test.com")) {
                     console.log("Injecting into Test");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
@@ -38,8 +37,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         files: ['directory3/style.css']
                     });
                 }
-            } else {
-                console.log("Injection disabled");
             }
         });
     }

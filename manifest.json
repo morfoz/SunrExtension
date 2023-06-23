@@ -30,19 +30,5 @@
             ],
             "matches": ["<all_urls>"]
         }
-    ],
-    "content_scripts": [
-        {
-            "matches": ["https://app-eu1.hubspot.com/*"],
-            "js": ["directory1/script.js"]
-        },
-        {
-            "matches": ["https://example.com/*"],
-            "js": ["directory2/script.js"]
-        },
-        {
-            "matches": ["https://test.com/*"],
-            "js": ["directory3/script.js"]
-        }
     ]
 }
