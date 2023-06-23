@@ -1,10 +1,17 @@
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === "install" || details.reason === "update") {
+        chrome.storage.local.set({ injectionEnabled: true });
+    }
+});
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete') {
         chrome.storage.local.get('injectionEnabled', (result) => {
             if (result.injectionEnabled) {
                 const url = tab.url;
+                console.log("Injection enabled");
 
-                if (url.includes("https://app-eu1.hubspot.com/") && url.includes("/26693160")) {
+                if (/^https:\/\/app-eu1\.hubspot\.com\/.*\/26693160.*/.test(url)) {
                     console.log("Injecting into Hubspot");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
@@ -15,7 +22,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         files: ['directory1/style.css']
                     });
                 } 
-                else if (url.includes("https://app-eu1.hubspot.com/") && url.includes("/25748774")) {
+                else if (/^https:\/\/example\.com/.test(url)) {
                     console.log("Injecting into Example");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
@@ -26,7 +33,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         files: ['directory2/style.css']
                     });
                 } 
-                else if (url.includes("https://test.com")) {
+                else if (/^https:\/\/test\.com/.test(url)) {
                     console.log("Injecting into Test");
                     chrome.scripting.executeScript({
                         target: { tabId: tabId },
@@ -37,6 +44,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         files: ['directory3/style.css']
                     });
                 }
+            } else {
+                console.log("Injection disabled");
             }
         });
     }
