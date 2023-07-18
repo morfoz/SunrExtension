@@ -30,7 +30,8 @@ function toggleDateDisplay() {
         return;
       }
 
-      var date = new Date(dateSpan.textContent);
+      var dateParts = dateSpan.textContent.split('/');
+      var date = new Date(dateParts[1] + '/' + dateParts[0] + '/' + dateParts[2]);
       var quarter = Math.ceil((date.getMonth() + 1) / 3);
 
       var quarterSpan = document.createElement('span');
@@ -44,6 +45,7 @@ function toggleDateDisplay() {
     }
   });
 }
+
 
 function togglePowerDisplay() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
