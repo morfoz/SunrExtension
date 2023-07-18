@@ -19,8 +19,6 @@ function addCustomLogo() {
   });
 }
 
-
-
 function toggleDateDisplay() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
   spans.forEach(function (span) {
@@ -46,8 +44,6 @@ function toggleDateDisplay() {
     }
   });
 }
-
-
 
 function togglePowerDisplay() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
@@ -108,8 +104,6 @@ function toggleCustomMenu() {
     ul.appendChild(li);
   });
 }
-
-
 
 function replaceTags() {
   // Define the lookup table for text and image pairs
@@ -221,15 +215,228 @@ function toggleHeader() {
 
   // Hide the header and filter bar by default
   header.style.display = 'none';
-  filterBar.style.display = 'none';
+  if(filterBar) {  // Check if filterBar is not null
+      filterBar.style.display = 'none';
+  }
 
   // Toggle the display of the header and filter bar when the checkbox is checked
   checkbox.addEventListener('change', function() {
+      let header = document.querySelector('header');
+      let filterBar = document.querySelector('[data-onboarding="filter-bar"]');
       header.style.display = this.checked ? 'block' : 'none';
-      filterBar.style.display = this.checked ? 'block' : 'none';
+      if(filterBar) { // Check if filterBar is not null
+          filterBar.style.display = this.checked ? 'block' : 'none';
+      }
   });
 }
 
+
+
+// --------------- Sidebar filter function
+// ---- Countries sidebard
+const countries = ['Italy', 'USA', 'Israel', 'Japan', 'Germany', 'Chile', 'UK', 'Bulgaria', 'Australia', 'Bulgaria', 'Spain', 'Malta', 'Poland', 'Belgium', 'Guyana', 'Polynesia', 'French Overseas'];
+countries.sort();
+
+// Creating the sidebar
+function createSidebar() {
+  let sidebar = document.createElement('div');
+  sidebar.id = 'mySidebar';
+  sidebar.style.cssText = 'z-index:1016; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f5; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
+  document.body.appendChild(sidebar);
+
+  // Creating the button to open the sidebar
+  let openBtn = document.createElement('button');
+  openBtn.id = 'openBtn'; 
+  openBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg>`;
+  openBtn.style.cssText = 'position: fixed; top: 50%; right: 20px; z-index: 9999; cursor: pointer; background: none; border: none;';
+  openBtn.addEventListener('click', openSidebar);
+  document.body.appendChild(openBtn);
+
+  // Adding a close button for the sidebar
+  let closeBtn = document.createElement('span');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.style.cssText = 'position: absolute; top: 20px; right: 10px; cursor: pointer; font-size: 30px;';
+  closeBtn.addEventListener('click', closeSidebar);
+  sidebar.appendChild(closeBtn);
+
+  return sidebar;
+}
+
+// Functions to open and close the sidebar
+function openSidebar() {
+  document.getElementById('mySidebar').style.transform = 'translateX(0)';
+  document.getElementById('openBtn').style.display = 'none'; // Hiding the open button when sidebar is open
+}
+
+function closeSidebar() {
+  document.getElementById('mySidebar').style.transform = 'translateX(100%)';
+  document.getElementById('openBtn').style.display = 'block'; // Displaying the open button when sidebar is closed
+}
+
+
+function createCountryControls(sidebar) {
+  let title = document.createElement('h2');
+  title.textContent = 'Filter by country';
+  sidebar.appendChild(title);
+
+  // Create a container for all the country checkboxes
+  let container = document.createElement('div');
+  container.id = 'country-container';
+
+  // Create control elements for each country
+  countries.forEach(country => {
+      let control = document.createElement('div');
+      let checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = country;
+      checkbox.checked = true;
+      let label = document.createElement('label');
+      label.htmlFor = country;
+      label.appendChild(document.createTextNode(country));
+
+      control.appendChild(checkbox);
+      control.appendChild(label);
+      container.appendChild(control);
+
+      // Listen to changes in checkbox status
+      checkbox.addEventListener('change', handleCountryCheckChange);
+  });
+
+  // Append the container to the sidebar
+  sidebar.appendChild(container);
+
+  // Add a "Uncheck All" element
+  let toggleCheckAll = document.createElement('p');
+  toggleCheckAll.textContent = 'Uncheck All';
+  toggleCheckAll.style.fontWeight = 'bold';
+  toggleCheckAll.style.cursor = 'pointer';
+  sidebar.appendChild(toggleCheckAll);
+
+  // Initialize flag to track check status
+  let isAllChecked = true;
+
+  // Handle the "Uncheck All" element click
+  toggleCheckAll.addEventListener('click', function() {
+      let checkboxes = document.querySelectorAll('#country-container input[type="checkbox"]');
+      isAllChecked = !isAllChecked; // Toggle the flag
+      checkboxes.forEach((checkbox) => {
+          checkbox.checked = isAllChecked;
+          handleCountryCheckChange({target: checkbox});
+      });
+
+      toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
+  });
+}
+
+function handleCountryCheckChange(e) {
+  let country = e.target.id;
+  let isChecked = e.target.checked;
+
+  // Find all the maps in the country and change their display style
+  document.querySelectorAll('.private-truncated-string__inner').forEach(elem => {
+      if(elem.textContent.includes(country)){
+          elem.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
+      }
+  });
+}
+
+function initializeFilters() {
+  // Initialize filters
+  countries.forEach(country => {
+      document.querySelectorAll('.private-truncated-string__inner').forEach(elem => {
+          if(elem.textContent.includes(country)){
+              elem.closest('[data-test-id="cdb-column-item"]').style.display = 'block';
+          }
+      });
+  });
+}
+
+
+
+// ---- project types sidebar
+
+/// List of project types ⚠️ THIS DEPENDS ON PROJECT IMAGE CHANGER replaceTags
+let projectTypes = ['Ground Mounted', 'Rooftop', 'Carport', 'Floating'];
+
+function createProjectTypeControls(sidebar) {
+    // Add a title to the sidebar
+    let title = document.createElement('h2');
+    title.textContent = 'Filter by project type';
+    sidebar.appendChild(title);
+
+    // Create a container for all the project type checkboxes
+    let container = document.createElement('div');
+    container.id = 'project-types-container';
+
+    // Create control elements for each type of project
+    projectTypes.forEach(type => {
+        let control = document.createElement('div');
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = type;
+        checkbox.checked = true;
+        let label = document.createElement('label');
+        label.htmlFor = type;
+        label.appendChild(document.createTextNode(type));
+
+        control.appendChild(checkbox);
+        control.appendChild(label);
+        container.appendChild(control);
+
+        // Listen to changes in checkbox status
+        checkbox.addEventListener('change', handleProjectTypeCheckChange);
+    });
+
+    // Append the container to the sidebar
+    sidebar.appendChild(container);
+
+    // Add a "Uncheck All" element
+    let toggleCheckAll = document.createElement('p');
+    toggleCheckAll.textContent = 'Uncheck All';
+    toggleCheckAll.style.fontWeight = 'bold';
+    toggleCheckAll.style.cursor = 'pointer';
+    sidebar.appendChild(toggleCheckAll);
+
+    let isAllChecked = true;
+
+    // Handle the "Uncheck All" element click
+    toggleCheckAll.addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('#project-types-container input[type="checkbox"]');
+        isAllChecked = !isAllChecked; // Toggle the flag
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = isAllChecked;
+            handleProjectTypeCheckChange({target: checkbox});
+        });
+        toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
+    });
+}
+
+
+function handleProjectTypeCheckChange(e) {
+    let type = e.target.id;
+    let isChecked = e.target.checked;
+
+    // Find all the cards of the project type and change their display style
+    document.querySelectorAll('.private-truncated-string__inner img[title]').forEach(img => {
+        if(img.title.includes(type)){
+            img.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
+        }
+    });
+}
+
+function initializeProjectTypeFilters() {
+    // Initialise filters
+    projectTypes.forEach(type => {
+        document.querySelectorAll('.private-truncated-string__inner img[title]').forEach(img => {
+            if(img.title.includes(type)){
+                img.closest('[data-test-id="cdb-column-item"]').style.display = 'block';
+            }
+        });
+    });
+}
+
+
+// ---- Wait functions //
 
 document.addEventListener('DOMContentLoaded', toggleHeader);
 
@@ -262,9 +469,19 @@ function waitHelpToLoad() {
           toggleHeader();
           replaceFlagEmojis();
           clearInterval(checkExist);
+          // Execution du code
+          let sidebar = createSidebar();
+          createCountryControls(sidebar);
+          initializeFilters();
+          createProjectTypeControls(sidebar);
+initializeProjectTypeFilters();
+
       }
   }, 500);
 }
+
+
+
 
 function startAllIntervals() {
   waitMenuToLoad();
