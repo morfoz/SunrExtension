@@ -236,7 +236,7 @@ function toggleHeader() {
 
 // --------------- Sidebar filter function
 // ---- Countries sidebard
-const countries = ['Italy', 'USA', 'Israel', 'Japan', 'Germany', 'Chile', 'UK', 'Bulgaria', 'Australia', 'Bulgaria', 'Spain', 'Malta', 'Poland', 'Belgium', 'Guyana', 'Polynesia', 'French Overseas'];
+const countries = ['Italy', 'USA', 'Israel', 'Japan', 'Germany', 'Chile', 'UK', 'Bulgaria', 'Australia', 'Spain', 'Malta', 'Poland', 'Belgium', 'Guyana', 'Polynesia', 'French Overseas'];
 countries.sort();
 
 // Creating the sidebar
@@ -297,7 +297,9 @@ function createCountryControls(sidebar) {
       checkbox.checked = true;
       let label = document.createElement('label');
       label.htmlFor = country;
+      label.style.marginLeft = "5px";
       label.appendChild(document.createTextNode(country));
+      label.innerHTML +=  ' ('  + countCountryCards(country) + ')';
 
       control.appendChild(checkbox);
       control.appendChild(label);
@@ -332,6 +334,20 @@ function createCountryControls(sidebar) {
       toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
   });
 }
+
+function countCountryCards(countryName) {
+  var elements = document.querySelectorAll('.private-truncated-string__inner');
+  var count = 0;
+  
+  elements.forEach(function(element) {
+    if (element.textContent.includes(countryName)) {
+      count++;
+    }
+  });
+  
+  return count;
+}
+
 
 function handleCountryCheckChange(e) {
   let country = e.target.id;
@@ -382,7 +398,9 @@ function createProjectTypeControls(sidebar) {
         checkbox.checked = true;
         let label = document.createElement('label');
         label.htmlFor = type;
+        label.style.marginLeft = "5px";
         label.appendChild(document.createTextNode(type));
+        label.innerHTML +=  ' ('  + countProjectTypeName(type) + ')';
 
         control.appendChild(checkbox);
         control.appendChild(label);
@@ -414,6 +432,19 @@ function createProjectTypeControls(sidebar) {
         });
         toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
     });
+}
+
+function countProjectTypeName(ProjectTypeName) {
+  var elements = document.querySelectorAll('.private-truncated-string__inner img[title]');
+  var count = 0;
+  
+  elements.forEach(function(element) {
+    if (element.title.includes(ProjectTypeName)) {
+      count++;
+    }
+  });
+  
+  return count;
 }
 
 
