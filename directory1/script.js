@@ -119,6 +119,7 @@ function replaceTags() {
   // Select all span elements that are tags
   var spans = document.querySelectorAll('span.private-truncated-string__inner span');
 
+
   // Check if any spans were found
   if (spans.length > 0) {
     spans.forEach(function (span) {
@@ -260,9 +261,6 @@ function calculateAndUpdateTotalPower() {
         }
       }
     });
-
-    // Log the total power to the console
-    console.log(`Total power for column: ${totalPower} MWp`);
 
     // Find the footer element and update the total power value
     let footerElement = column.querySelector('div[data-test-id="cdb-column-footer"] span[data-test-id="summary-line-1"] span:nth-child(2)');
@@ -513,6 +511,23 @@ function initializeProjectTypeFilters() {
     });
 }
 
+// not display the second line of the columns footers
+function hideSummaryLine2() {
+  // Get all columns
+  let columns = document.querySelectorAll('div[data-test-id="cdb-column"]');
+
+  // Iterate over each column
+  columns.forEach((column) => {
+    // Get the summary-line-2 elements within the current column
+    let summaryLine2Elements = column.querySelectorAll('small[data-test-id="summary-line-2"]');
+
+    // Iterate over each summary-line-2 element and set its display style to none
+    summaryLine2Elements.forEach((element) => {
+      element.style.display = 'none';
+    });
+  });
+}
+
 
 // ---- Wait functions //
 
@@ -534,7 +549,7 @@ function waitCardToLoad() {
     if (elem) {
       toggleDateDisplay();
       clearInterval(checkExist);
-
+      hideSummaryLine2();
     }
   }, 500);
 }
