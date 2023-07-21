@@ -235,6 +235,44 @@ function toggleHeader() {
 
 
 // --------------- Sidebar filter function
+// Function to calculate and update total power for each column
+function calculateAndUpdateTotalPower() {
+  // Get all columns
+  let columns = document.querySelectorAll('div[data-test-id="cdb-column"]');
+
+  // Iterate over each column
+  columns.forEach((column) => {
+    let totalPower = 0;
+
+    // Get all cards in the column that are not hidden
+    let cards = column.querySelectorAll('div[data-test-id="cdb-column-item"]:not([style="display: none;"])');
+
+    // Iterate over each card
+    cards.forEach((card) => {
+      // Find the power element in the card
+      let powerElement = card.querySelector('div[data-selenium-test="card-property"] span[data-test-id="cdbc-property-value"] span');
+
+      // If power element found, parse its value and add to totalPower
+      if (powerElement) {
+        let powerValue = parseFloat(powerElement.innerText);
+        if (!isNaN(powerValue)) {
+          totalPower += powerValue;
+        }
+      }
+    });
+
+    // Log the total power to the console
+    console.log(`Total power for column: ${totalPower} MWp`);
+
+    // Find the footer element and update the total power value
+    let footerElement = column.querySelector('div[data-test-id="cdb-column-footer"] span[data-test-id="summary-line-1"] span:nth-child(2)');
+    if (footerElement) {
+      footerElement.innerText = `${totalPower} MWp`;
+    } else {
+      console.log('Footer element not found in column');
+    }
+  });
+}
 // ---- Countries sidebard
 const countries = ['Italy', 'USA', 'Israel', 'Japan', 'Germany', 'Chile', 'UK', 'Bulgaria', 'Australia', 'Spain', 'Malta', 'Poland', 'Belgium', 'Guyana', 'Polynesia', 'French Overseas'];
 countries.sort();
@@ -357,8 +395,10 @@ function handleCountryCheckChange(e) {
   document.querySelectorAll('.private-truncated-string__inner').forEach(elem => {
       if(elem.textContent.includes(country)){
           elem.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
+          
       }
   });
+  calculateAndUpdateTotalPower();
 }
 
 function initializeFilters() {
@@ -456,9 +496,11 @@ function handleProjectTypeCheckChange(e) {
     document.querySelectorAll('.private-truncated-string__inner img[title]').forEach(img => {
         if(img.title.includes(type)){
             img.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
-        }
-    });
+          }
+        });
+        calculateAndUpdateTotalPower();
 }
+
 
 function initializeProjectTypeFilters() {
     // Initialise filters
