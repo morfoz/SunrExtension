@@ -107,43 +107,60 @@ function toggleCustomMenu() {
   });
 }
 
-function replaceTags() {
+function replaceProjectType() {
   // Define the lookup table for text and image pairs
   var textImagePairs = {
-    'Ground Mounted': 'img/type/ground.png',
+    'Ground': 'img/type/ground.png',
     'Rooftop': 'img/type/rooftop.png',
     'Carport': 'img/type/carport.png',
     'Floating': 'img/type/floating.png'
   };
 
-  // Select all span elements that are tags
-  var spans = document.querySelectorAll('span.private-truncated-string__inner span');
+  // Select all div elements that are properties
+  var properties = document.querySelectorAll('div[data-selenium-test="card-property"]');
 
+  // Check if any properties were found
+  if (properties.length > 0) {
+    properties.forEach(function (property) {
+      // Find the label and value elements within the property
+      var labelElement = property.querySelector('span[data-test-id="cdbc-property-label"]');
+      var valueElement = property.querySelector('span[data-test-id="cdbc-property-value"]');
 
-  // Check if any spans were found
-  if (spans.length > 0) {
-    spans.forEach(function (span) {
-      // Get the trimmed text content of the span
-      var text = span.textContent.trim();
-      // Check if the text is in the lookup table
-      if (text in textImagePairs) {
-        // Create a new img element
-        var imgElement = document.createElement('img');
+      // Check if both elements were found and the label is "Project type:"
+      if (labelElement && valueElement && labelElement.textContent.trim() === 'Project type:') {
+        // Get the trimmed text content of the value
+        var text = valueElement.textContent.trim();
 
-        // Set the img src to the image in your extension's files
-        imgElement.src = chrome.runtime.getURL(textImagePairs[text]);
+        // Check if the text is in the lookup table
+        if (text in textImagePairs) {
+          // Create a new img element
+          var imgElement = document.createElement('img');
 
-        // Set the style properties of the image
-        imgElement.style.height = '20px';
-        imgElement.style.verticalAlign = 'middle';
-        imgElement.title = text;
-        span.parentNode.replaceChild(imgElement, span);
+          // Set the img src to the image in your extension's files
+          imgElement.src = chrome.runtime.getURL(textImagePairs[text]);
+
+          // Set the style properties of the image
+          imgElement.style.height = '20px';
+          imgElement.style.verticalAlign = 'middle';
+          imgElement.style.position = 'absolute';
+          imgElement.style.top = '46px';
+          imgElement.title = text;
+
+          // Replace the value element with the new img element
+          valueElement.parentNode.replaceChild(imgElement, valueElement);
+
+          // Hide the label element
+          labelElement.style.display = 'none';
+        }
       }
     });
   } else {
-    console.log('No spans with the specified text found.');
+    console.log('No property divs with the specified text found.');
   }
 }
+
+
+
 
 function replaceFlagEmojis() {
   var emojiImagePairs = {
@@ -154,7 +171,10 @@ function replaceFlagEmojis() {
     '🇱🇺': 'img/flags/luxembourg.png',
     '🇮🇹': 'img/flags/italy.png',
     '🇮🇱': 'img/flags/israel.png',
-    '🇺🇸': 'img/flags/usa.png'
+    '🇺🇸': 'img/flags/usa.png',
+    '🇲🇹': 'img/malta.png',
+    '🇬🇫': 'img/guyane.png',
+    '🇵🇫': 'img/polynesia.png',
   };
 
   var elements = document.querySelectorAll('body *');
@@ -169,6 +189,7 @@ function replaceFlagEmojis() {
             imgElement.src = chrome.runtime.getURL(emojiImagePairs[emoji]);
             imgElement.style.height = '18px';
             imgElement.style.verticalAlign = 'middle';
+            
             
             var textBefore = child.nodeValue.substring(0, index);
             var textAfter = child.nodeValue.substring(index + emoji.length);
@@ -190,6 +211,26 @@ function replaceFlagEmojis() {
     });
   });
 }
+
+// Function to hide labels with 'Country'
+function hideCountryLabel() {
+  // Select all label elements
+  var labels = document.querySelectorAll('span[data-test-id="cdbc-property-label"]');
+
+  // Check if any labels were found
+  if (labels.length > 0) {
+    labels.forEach(function (label) {
+      // Check if the text content contains 'Country'
+      if (label.textContent.includes('Country')) {
+        // Set the style property to hidden
+        label.style.visibility = 'hidden';
+      }
+    });
+  } else {
+    console.log('No labels with the specified text found.');
+  }
+}
+
 
 
 function toggleHeader() {
@@ -528,7 +569,6 @@ function hideSummaryLine2() {
   });
 }
 
-
 // ---- Wait functions //
 
 document.addEventListener('DOMContentLoaded', toggleHeader);
@@ -550,6 +590,7 @@ function waitCardToLoad() {
       toggleDateDisplay();
       clearInterval(checkExist);
       hideSummaryLine2();
+      hideCountryLabel();
     }
   }, 500);
 }
@@ -558,7 +599,7 @@ function waitHelpToLoad() {
       var elem = document.querySelector("#help-widget-toggle");
       if (elem) {
           togglePowerDisplay();
-          replaceTags();
+          replaceProjectType();
           toggleHeader();
           replaceFlagEmojis();
           clearInterval(checkExist);
@@ -572,9 +613,6 @@ initializeProjectTypeFilters();
       }
   }, 500);
 }
-
-
-
 
 function startAllIntervals() {
   waitMenuToLoad();
