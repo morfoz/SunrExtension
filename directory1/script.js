@@ -413,7 +413,7 @@ function createCountryControls(sidebar) {
 }
 
 function countCountryCards(countryName) {
-  var elements = document.querySelectorAll('.private-truncated-string__inner');
+  var elements = document.querySelectorAll('[data-test-id="cdbc-property-value"]');
   var count = 0;
   
   elements.forEach(function(element) {
@@ -431,7 +431,7 @@ function handleCountryCheckChange(e) {
   let isChecked = e.target.checked;
 
   // Find all the maps in the country and change their display style
-  document.querySelectorAll('.private-truncated-string__inner').forEach(elem => {
+  document.querySelectorAll('[data-test-id="cdbc-property-value"]').forEach(elem => {
       if(elem.textContent.includes(country)){
           elem.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
           
@@ -456,7 +456,7 @@ function initializeFilters() {
 // ---- project types sidebar
 
 /// List of project types ⚠️ THIS DEPENDS ON PROJECT IMAGE CHANGER replaceTags
-let projectTypes = ['Ground Mounted', 'Rooftop', 'Carport', 'Floating'];
+let projectTypes = ['Ground', 'Rooftop', 'Carport', 'Floating'];
 
 function createProjectTypeControls(sidebar) {
     // Add a title to the sidebar
@@ -514,7 +514,7 @@ function createProjectTypeControls(sidebar) {
 }
 
 function countProjectTypeName(ProjectTypeName) {
-  var elements = document.querySelectorAll('.private-truncated-string__inner img[title]');
+  var elements = document.querySelectorAll('[data-test-id="cdbc-property-2"] img[title]');
   var count = 0;
   
   elements.forEach(function(element) {
@@ -532,7 +532,7 @@ function handleProjectTypeCheckChange(e) {
     let isChecked = e.target.checked;
 
     // Find all the cards of the project type and change their display style
-    document.querySelectorAll('.private-truncated-string__inner img[title]').forEach(img => {
+    document.querySelectorAll('[data-test-id="cdbc-property-2"] img[title]').forEach(img => {
         if(img.title.includes(type)){
             img.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
           }
