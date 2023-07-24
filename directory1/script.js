@@ -116,20 +116,29 @@ function replaceProjectType() {
     'Floating': 'img/type/floating.png'
   };
 
-  // Select all div elements that are properties
-  var properties = document.querySelectorAll('div[data-selenium-test="card-property"]');
+  // Select all label elements
+  var labels = document.querySelectorAll('span[data-test-id="cdbc-property-label"]');
 
-  // Check if any properties were found
-  if (properties.length > 0) {
-    properties.forEach(function (property) {
-      // Find the label and value elements within the property
-      var labelElement = property.querySelector('span[data-test-id="cdbc-property-label"]');
-      var valueElement = property.querySelector('span[data-test-id="cdbc-property-value"]');
+  // Define a function to get next element of a certain tag
+  function getNextElement (element, tagName) {
+    while (element = element.nextSibling) {
+      if (element.tagName.toLowerCase() === tagName) {
+        return element;
+      }
+    }
+    return null;
+  }
 
-      // Check if both elements were found and the label is "Project type:"
-      if (labelElement && valueElement && labelElement.textContent.trim() === 'Project type:') {
+  // Check if any labels were found
+  if (labels.length > 0) {
+    labels.forEach(function (label) {
+      // Check if the text content contains 'Project type:'
+      if (label.textContent.trim() === 'Project type:') {
+        // Find the following sibling which contains the value
+        var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
+
         // Get the trimmed text content of the value
-        var text = valueElement.textContent.trim();
+        var text = valueSpan ? valueSpan.textContent.trim() : '';
 
         // Check if the text is in the lookup table
         if (text in textImagePairs) {
@@ -142,23 +151,32 @@ function replaceProjectType() {
           // Set the style properties of the image
           imgElement.style.height = '20px';
           imgElement.style.verticalAlign = 'middle';
-          imgElement.style.position = 'absolute';
-          imgElement.style.top = '46px';
           imgElement.title = text;
 
-          // Replace the value element with the new img element
-          valueElement.parentNode.replaceChild(imgElement, valueElement);
+          // Create a new span element with class "fStvms" and append imgElement
+          var newSpan = document.createElement('span');
+          newSpan.className = "fStvms tag";
+          newSpan.appendChild(imgElement);
+          console.log(newSpan)
 
-          // Hide the label element
-          labelElement.style.display = 'none';
+          // Get closest 'ul' ancestor
+          var ulAncestor = label.closest('ul');
+
+          // Find the next div element after the 'ul' ancestor
+          var divElement = ulAncestor ? getNextElement(ulAncestor, 'span') : null;
+
+          // Check if div element is found
+          if (divElement) {
+            // Add the new span to the div element
+            divElement.appendChild(newSpan);
+          }
         }
       }
     });
   } else {
-    console.log('No property divs with the specified text found.');
+    console.log('No labels with the specified text found.');
   }
 }
-
 
 
 
@@ -222,14 +240,47 @@ function hideCountryLabel() {
     labels.forEach(function (label) {
       // Check if the text content contains 'Country'
       if (label.textContent.includes('Country')) {
-        // Set the style property to hidden
-        label.style.visibility = 'hidden';
+        // Set the style of parent div to display none
+        label.parentElement.style.display = 'none';
+
+        // Find the following sibling which contains the value
+        var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
+
+        // Create a new span element with the value text
+        var newSpan = document.createElement('span');
+        newSpan.className="fStvms tag"
+        newSpan.innerText = valueSpan ? valueSpan.textContent : '';
+        console.log(newSpan.innerText)
+
+        // Define a function to get next element of a certain tag
+        function getNextElement (element, tagName) {
+          while (element = element.nextSibling) {
+            if (element.tagName.toLowerCase() === tagName) {
+              return element;
+            }
+          }
+          return null;
+        }
+
+        // Get closest 'ul' ancestor
+        var ulAncestor = label.closest('ul');
+
+        // Find the next div element after the 'ul' ancestor
+        var divElement = ulAncestor ? getNextElement(ulAncestor, 'span') : null;
+
+        // Check if div element is found
+        if (divElement) {
+          // Add the new span to the div element
+          divElement.appendChild(newSpan);
+        }
       }
     });
   } else {
     console.log('No labels with the specified text found.');
   }
 }
+
+
 
 
 
