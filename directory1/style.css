@@ -107,3 +107,11 @@ div[data-portal-hook="marketplace-menu"] {
 #toggleHeader:checked + label:before {
   content: "Retract >";
 }
+
+
+span.fStvms.tag {
+  border: solid 1px grey;
+  background: white;
+  padding: 3px;
+  margin: 3px;
+}

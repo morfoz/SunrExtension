@@ -565,11 +565,11 @@ function createProjectTypeControls(sidebar) {
 }
 
 function countProjectTypeName(ProjectTypeName) {
-  var elements = document.querySelectorAll('[data-test-id="cdbc-property-2"] img[title]');
+  var elements = document.querySelectorAll('[data-test-id="cdbc-property-2"] [data-test-id="cdbc-property-value"]');
   var count = 0;
   
   elements.forEach(function(element) {
-    if (element.title.includes(ProjectTypeName)) {
+    if (element.textContent.includes(ProjectTypeName)) {
       count++;
     }
   });
@@ -583,9 +583,9 @@ function handleProjectTypeCheckChange(e) {
     let isChecked = e.target.checked;
 
     // Find all the cards of the project type and change their display style
-    document.querySelectorAll('[data-test-id="cdbc-property-2"] img[title]').forEach(img => {
-        if(img.title.includes(type)){
-            img.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
+    document.querySelectorAll('[data-test-id="cdbc-property-2"] [data-test-id="cdbc-property-value"]').forEach(prop => {
+        if(prop.textContent.includes(type)){
+            prop.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
           }
         });
         calculateAndUpdateTotalPower();
