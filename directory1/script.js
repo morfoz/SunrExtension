@@ -464,7 +464,7 @@ function createCountryControls(sidebar) {
 }
 
 function countCountryCards(countryName) {
-  var elements = document.querySelectorAll('[data-test-id="cdbc-property-value"]');
+  var elements = document.querySelectorAll('[data-test-id="cdbc-property-value"] span span');
   var count = 0;
   
   elements.forEach(function(element) {
@@ -565,7 +565,7 @@ function createProjectTypeControls(sidebar) {
 }
 
 function countProjectTypeName(ProjectTypeName) {
-  var elements = document.querySelectorAll('[data-test-id="cdbc-property-2"] [data-test-id="cdbc-property-value"]');
+  var elements = document.querySelectorAll('[data-selenium-test="card-property"] [data-test-id="cdbc-property-value"] span span');
   var count = 0;
   
   elements.forEach(function(element) {
@@ -583,7 +583,7 @@ function handleProjectTypeCheckChange(e) {
     let isChecked = e.target.checked;
 
     // Find all the cards of the project type and change their display style
-    document.querySelectorAll('[data-test-id="cdbc-property-2"] [data-test-id="cdbc-property-value"]').forEach(prop => {
+    document.querySelectorAll('[data-selenium-test="card-property"] [data-test-id="cdbc-property-value"]').forEach(prop => {
         if(prop.textContent.includes(type)){
             prop.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
           }
@@ -604,21 +604,28 @@ function initializeProjectTypeFilters() {
 }
 
 // not display the second line of the columns footers
-function hideSummaryLine2() {
-  // Get all columns
-  let columns = document.querySelectorAll('div[data-test-id="cdb-column"]');
 
-  // Iterate over each column
-  columns.forEach((column) => {
-    // Get the summary-line-2 elements within the current column
-    let summaryLine2Elements = column.querySelectorAll('small[data-test-id="summary-line-2"]');
+function hideProjectTypeProperty() {
+  // Get all card-property elements
+  let cardPropertyElements = document.querySelectorAll('[data-selenium-test="card-property"]');
 
-    // Iterate over each summary-line-2 element and set its display style to none
-    summaryLine2Elements.forEach((element) => {
-      element.style.display = 'none';
+  // Iterate over each card-property element
+  cardPropertyElements.forEach((cardProperty) => {
+    // Get the cdbc-property-value elements within the current card-property
+    let cdbcPropertyValueElements = cardProperty.querySelectorAll('[data-test-id="cdbc-property-value"]');
+
+    // Iterate over each cdbc-property-value element
+    cdbcPropertyValueElements.forEach((element) => {
+      // Check if the innerText of the element is in the list of project types
+      if (projectTypes.includes(element.innerText)) {
+        // If it is, set the display style of the whole card to none
+        cardProperty.style.display = 'none';
+      }
     });
   });
 }
+
+
 
 // ---- Wait functions //
 
@@ -640,7 +647,7 @@ function waitCardToLoad() {
     if (elem) {
       toggleDateDisplay();
       clearInterval(checkExist);
-      hideSummaryLine2();
+      hideProjectTypeProperty();
       hideCountryLabel();
     }
   }, 500);
