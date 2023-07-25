@@ -109,9 +109,17 @@ div[data-portal-hook="marketplace-menu"] {
 }
 
 
+/* tag style for the cards */
+
 span.fStvms.tag {
   border: solid 1px grey;
   background: white;
   padding: 3px;
   margin: 3px;
+}
+
+/* not displau totals as in crm */
+.ColumnTitle__StyledBoardHeader-sc-1h3pg0-0 .ColumnTitle__RightStyledBoardH6-sc-1h3pg0-2 span:first-child span:not(.UIIcon__IconContent-sc-1fcpw32-0)
+{
+  display: none;
 }

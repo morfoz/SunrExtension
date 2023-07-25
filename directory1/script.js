@@ -363,6 +363,9 @@ function calculateAndUpdateTotalPower() {
     }
   });
 }
+
+
+
 // ---- Countries sidebard
 const countries = ['Italy', 'USA', 'Israel', 'Japan', 'Germany', 'Chile', 'UK', 'Bulgaria', 'Australia', 'Spain', 'Malta', 'Poland', 'Belgium', 'Guyana', 'Polynesia', 'French Overseas'];
 countries.sort();
