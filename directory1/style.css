@@ -119,7 +119,6 @@ span.fStvms.tag {
 }
 
 /* not displau totals as in crm */
-.ColumnTitle__StyledBoardHeader-sc-1h3pg0-0 .ColumnTitle__RightStyledBoardH6-sc-1h3pg0-2 span:first-child span:not(.UIIcon__IconContent-sc-1fcpw32-0)
-{
-  display: none;
+[class*='ColumnTitle__'] [class*='ColumnHeaderSpacedContent__'] span:not([class]) {
+    display: none;
 }
