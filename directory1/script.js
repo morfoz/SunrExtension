@@ -1,3 +1,67 @@
+// variables
+const countries = ['Australia', 'Belgium', 'Bulgaria', 'Chile', 'Germany', 'Guyana', 'Israel', 'Italy', 'Japan', 'Luxembourg', 'Malta', 'Poland', 'Polynesia', 'Spain', 'UK', 'USA']
+countries.sort();
+
+var emojiImagePairs = {
+  '🇦🇺': 'img/flags/australia.png',
+  '🇧🇪': 'img/flags/belgium.png',
+  '🇧🇬': 'img/flags/bulgaria.png',
+  '🇨🇱': 'img/flags/chile.png',
+  '🇩🇪': 'img/flags/germany.png',
+  '🇬🇫': 'img/flags/guyana.png',
+  '🇮🇱': 'img/flags/israel.png',
+  '🇮🇹': 'img/flags/italy.png',
+  '🇯🇵': 'img/flags/japan.png',
+  '🇱🇺': 'img/flags/luxembourg.png',
+  '🇲🇹': 'img/flags/malta.png',
+  '🇵🇱': 'img/flags/poland.png',
+  '🇵🇫': 'img/flags/polynesia.png',
+  '🇪🇸': 'img/flags/spain.png',
+  '🇬🇧': 'img/flags/uk.png',
+  '🇺🇸': 'img/flags/usa.png',
+};
+
+// Create a mapping from country names to image paths
+let countryImagePairs = {
+  'Australia': 'img/flags/australia.png',
+  'Belgium': 'img/flags/belgium.png',
+  'Bulgaria': 'img/flags/bulgaria.png',
+  'Chile': 'img/flags/chile.png',
+  'Germany': 'img/flags/germany.png',
+  'Guyana': 'img/flags/guyana.png',
+  'Israel': 'img/flags/israel.png',
+  'Italy': 'img/flags/italy.png',
+  'Japan': 'img/flags/japan.png',
+  'Luxembourg': 'img/flags/luxembourg.png',
+  'Malta': 'img/flags/malta.png',
+  'Poland': 'img/flags/poland.png',
+  'Polynesia': 'img/flags/polynesia.png',
+  'Spain': 'img/flags/spain.png',
+  'UK': 'img/flags/uk.png',
+  'USA': 'img/flags/usa.png'
+};
+
+
+let projectTypes = ['Carport', 'Floating', 'Ground', 'Rooftop'];
+
+var textImagePairs = {
+  'Ground': 'img/type/ground.png',
+  'Rooftop': 'img/type/rooftop.png',
+  'Carport': 'img/type/carport.png',
+  'Floating': 'img/type/floating.png'
+};
+
+var menuItems = [
+  { name: 'Contacts', link: 'https://app-eu1.hubspot.com/contacts/26693160/contacts' },
+  { name: 'Companies', link: 'https://app-eu1.hubspot.com/contacts/26693160/companies' },
+  { name: 'Deals', link: 'https://app-eu1.hubspot.com/contacts/26693160/deals' },
+  { name: 'Tasks', link: 'https://app-eu1.hubspot.com/tasks/26693160' },
+  { name: 'Tickets', link: 'https://app-eu1.hubspot.com/contacts/26693160/tickets' },
+  { name: 'Dashboard', link: 'https://app-eu1.hubspot.com/reports-dashboard/26693160' },
+];
+
+// functions
+
 function addCustomLogo() {
   var logos = Array.from(document.getElementsByClassName('nav-logo'));
   logos.forEach(function (logo) {
@@ -87,15 +151,6 @@ function toggleCustomMenu() {
     ul.removeChild(ul.lastChild);
   }
 
-  var menuItems = [
-    { name: 'Contacts', link: 'https://app-eu1.hubspot.com/contacts/26693160/contacts' },
-    { name: 'Companies', link: 'https://app-eu1.hubspot.com/contacts/26693160/companies' },
-    { name: 'Deals', link: 'https://app-eu1.hubspot.com/contacts/26693160/deals' },
-    { name: 'Tasks', link: 'https://app-eu1.hubspot.com/tasks/26693160' },
-    { name: 'Tickets', link: 'https://app-eu1.hubspot.com/contacts/26693160/tickets' },
-    { name: 'Dashboard', link: 'https://app-eu1.hubspot.com/reports-dashboard/26693160' },
-  ];
-
   menuItems.forEach(function (menuItem) {
     var li = document.createElement('li');
     var a = document.createElement('a');
@@ -108,14 +163,6 @@ function toggleCustomMenu() {
 }
 
 function replaceProjectType() {
-  // Define the lookup table for text and image pairs
-  var textImagePairs = {
-    'Ground': 'img/type/ground.png',
-    'Rooftop': 'img/type/rooftop.png',
-    'Carport': 'img/type/carport.png',
-    'Floating': 'img/type/floating.png'
-  };
-
   // Select all label elements
   var labels = document.querySelectorAll('span[data-test-id="cdbc-property-label"]');
 
@@ -181,20 +228,6 @@ function replaceProjectType() {
 
 
 function replaceFlagEmojis() {
-  var emojiImagePairs = {
-    '🇧🇬': 'img/flags/bulgaria.png',
-    '🇪🇸': 'img/flags/spain.png',
-    '🇵🇱': 'img/flags/poland.png',
-    '🇩🇪': 'img/flags/germany.png',
-    '🇱🇺': 'img/flags/luxembourg.png',
-    '🇮🇹': 'img/flags/italy.png',
-    '🇮🇱': 'img/flags/israel.png',
-    '🇺🇸': 'img/flags/usa.png',
-    '🇲🇹': 'img/malta.png',
-    '🇬🇫': 'img/guyane.png',
-    '🇵🇫': 'img/polynesia.png',
-  };
-
   var elements = document.querySelectorAll('body *');
 
   elements.forEach(function (element) {
@@ -281,9 +314,6 @@ function hideCountryLabel() {
 }
 
 
-
-
-
 function toggleHeader() {
   // Locate the header and filter bar
   let header = document.querySelector('header');
@@ -367,8 +397,6 @@ function calculateAndUpdateTotalPower() {
 
 
 // ---- Countries sidebard
-const countries = ['Italy', 'USA', 'Israel', 'Japan', 'Germany', 'Chile', 'UK', 'Bulgaria', 'Australia', 'Spain', 'Malta', 'Poland', 'Belgium', 'Guyana', 'Polynesia', 'French Overseas'];
-countries.sort();
 
 // Creating the sidebar
 function createSidebar() {
@@ -409,62 +437,78 @@ function closeSidebar() {
   document.getElementById('openBtn').style.display = 'block'; // Displaying the open button when sidebar is closed
 }
 
-
 function createCountryControls(sidebar) {
-  let title = document.createElement('h2');
-  title.textContent = 'Filter by country';
-  sidebar.appendChild(title);
+let title = document.createElement('h2');
+title.textContent = 'Filter by country';
+sidebar.appendChild(title);
 
-  // Create a container for all the country checkboxes
-  let container = document.createElement('div');
-  container.id = 'country-container';
+// Create a container for all the country checkboxes
+let container = document.createElement('div');
+container.id = 'country-container';
 
-  // Create control elements for each country
-  countries.forEach(country => {
-      let control = document.createElement('div');
-      let checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = country;
-      checkbox.checked = true;
-      let label = document.createElement('label');
-      label.htmlFor = country;
-      label.style.marginLeft = "5px";
-      label.appendChild(document.createTextNode(country));
-      label.innerHTML +=  ' ('  + countCountryCards(country) + ')';
+// Create control elements for each country
+countries.forEach(country => {
+  let control = document.createElement('div');
+  let checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.id = country;
+  checkbox.checked = true;
 
-      control.appendChild(checkbox);
-      control.appendChild(label);
-      container.appendChild(control);
+  let label = document.createElement('label');
+  label.htmlFor = country;
+  label.style.marginLeft = "5px";
 
-      // Listen to changes in checkbox status
-      checkbox.addEventListener('change', handleCountryCheckChange);
+  // Create image element for each country
+  let img = document.createElement('img');
+  // set the source of the image using the `countryImagePairs` object, if the country is in the object
+  if (countryImagePairs[country]) {
+      img.src = chrome.runtime.getURL(countryImagePairs[country]); 
+      img.style.height = '15px';
+      img.style.width = '15px';
+      img.style.marginRight = '5px';
+  } else {
+      console.error('No image found for country: ', country);
+  }
+
+  // append the image to the label
+  label.appendChild(img);
+  // append the country name and count to the label
+  label.appendChild(document.createTextNode(country + ' (' + countCountryCards(country) + ')'));
+
+  control.appendChild(checkbox);
+  control.appendChild(label);
+  container.appendChild(control);
+
+  // Listen to changes in checkbox status
+  checkbox.addEventListener('change', handleCountryCheckChange);
+});
+
+// Append the container to the sidebar
+sidebar.appendChild(container);
+
+// Add a "Uncheck All" element
+let toggleCheckAll = document.createElement('p');
+toggleCheckAll.textContent = 'Uncheck All';
+toggleCheckAll.style.fontWeight = 'bold';
+toggleCheckAll.style.cursor = 'pointer';
+sidebar.appendChild(toggleCheckAll);
+
+// Initialize flag to track check status
+let isAllChecked = true;
+
+// Handle the "Uncheck All" element click
+toggleCheckAll.addEventListener('click', function() {
+  let checkboxes = document.querySelectorAll('#country-container input[type="checkbox"]');
+  isAllChecked = !isAllChecked; // Toggle the flag
+  checkboxes.forEach((checkbox) => {
+      checkbox.checked = isAllChecked;
+      handleCountryCheckChange({target: checkbox});
   });
 
-  // Append the container to the sidebar
-  sidebar.appendChild(container);
-
-  // Add a "Uncheck All" element
-  let toggleCheckAll = document.createElement('p');
-  toggleCheckAll.textContent = 'Uncheck All';
-  toggleCheckAll.style.fontWeight = 'bold';
-  toggleCheckAll.style.cursor = 'pointer';
-  sidebar.appendChild(toggleCheckAll);
-
-  // Initialize flag to track check status
-  let isAllChecked = true;
-
-  // Handle the "Uncheck All" element click
-  toggleCheckAll.addEventListener('click', function() {
-      let checkboxes = document.querySelectorAll('#country-container input[type="checkbox"]');
-      isAllChecked = !isAllChecked; // Toggle the flag
-      checkboxes.forEach((checkbox) => {
-          checkbox.checked = isAllChecked;
-          handleCountryCheckChange({target: checkbox});
-      });
-
-      toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
-  });
+  toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
+});
 }
+
 
 function countCountryCards(countryName) {
   var elements = document.querySelectorAll('[data-test-id="cdbc-property-value"] span span');
@@ -510,62 +554,75 @@ function initializeFilters() {
 // ---- project types sidebar
 
 /// List of project types ⚠️ THIS DEPENDS ON PROJECT IMAGE CHANGER replaceTags
-let projectTypes = ['Ground', 'Rooftop', 'Carport', 'Floating'];
 
 function createProjectTypeControls(sidebar) {
-    // Add a title to the sidebar
-    let title = document.createElement('h2');
-    title.textContent = 'Filter by project type';
-    sidebar.appendChild(title);
+  // Add a title to the sidebar
+  let title = document.createElement('h2');
+  title.textContent = 'Filter by project type';
+  sidebar.appendChild(title);
 
-    // Create a container for all the project type checkboxes
-    let container = document.createElement('div');
-    container.id = 'project-types-container';
+  // Create a container for all the project type checkboxes
+  let container = document.createElement('div');
+  container.id = 'project-types-container';
 
-    // Create control elements for each type of project
-    projectTypes.forEach(type => {
-        let control = document.createElement('div');
-        let checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = type;
-        checkbox.checked = true;
-        let label = document.createElement('label');
-        label.htmlFor = type;
-        label.style.marginLeft = "5px";
-        label.appendChild(document.createTextNode(type));
-        label.innerHTML +=  ' ('  + countProjectTypeName(type) + ')';
+  // Create control elements for each type of project
+  projectTypes.forEach(type => {
+      let control = document.createElement('div');
+      let checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = type;
+      checkbox.checked = true;
+      let label = document.createElement('label');
+      label.htmlFor = type;
+      label.style.marginLeft = "5px";
+      
+      // Create image element for each type
+      if (textImagePairs[type]) {
+          let img = document.createElement('img');
+          img.src = chrome.runtime.getURL(textImagePairs[type]);
+          img.style.height = '15px';
+          img.style.width = '15px';
+          img.style.marginRight = '5px';
+          label.appendChild(img);  // append the image to the label
+      } else {
+          console.error('No image found for type: ', type);
+      }
+      
+      label.appendChild(document.createTextNode(type));
+      label.innerHTML +=  ' ('  + countProjectTypeName(type) + ')';
 
-        control.appendChild(checkbox);
-        control.appendChild(label);
-        container.appendChild(control);
+      control.appendChild(checkbox);
+      control.appendChild(label);
+      container.appendChild(control);
 
-        // Listen to changes in checkbox status
-        checkbox.addEventListener('change', handleProjectTypeCheckChange);
-    });
+      // Listen to changes in checkbox status
+      checkbox.addEventListener('change', handleProjectTypeCheckChange);
+  });
 
-    // Append the container to the sidebar
-    sidebar.appendChild(container);
+  // Append the container to the sidebar
+  sidebar.appendChild(container);
 
-    // Add a "Uncheck All" element
-    let toggleCheckAll = document.createElement('p');
-    toggleCheckAll.textContent = 'Uncheck All';
-    toggleCheckAll.style.fontWeight = 'bold';
-    toggleCheckAll.style.cursor = 'pointer';
-    sidebar.appendChild(toggleCheckAll);
+  // Add a "Uncheck All" element
+  let toggleCheckAll = document.createElement('p');
+  toggleCheckAll.textContent = 'Uncheck All';
+  toggleCheckAll.style.fontWeight = 'bold';
+  toggleCheckAll.style.cursor = 'pointer';
+  sidebar.appendChild(toggleCheckAll);
 
-    let isAllChecked = true;
+  let isAllChecked = true;
 
-    // Handle the "Uncheck All" element click
-    toggleCheckAll.addEventListener('click', function() {
-        let checkboxes = document.querySelectorAll('#project-types-container input[type="checkbox"]');
-        isAllChecked = !isAllChecked; // Toggle the flag
-        checkboxes.forEach((checkbox) => {
-            checkbox.checked = isAllChecked;
-            handleProjectTypeCheckChange({target: checkbox});
-        });
-        toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
-    });
+  // Handle the "Uncheck All" element click
+  toggleCheckAll.addEventListener('click', function() {
+      let checkboxes = document.querySelectorAll('#project-types-container input[type="checkbox"]');
+      isAllChecked = !isAllChecked; // Toggle the flag
+      checkboxes.forEach((checkbox) => {
+          checkbox.checked = isAllChecked;
+          handleProjectTypeCheckChange({target: checkbox});
+      });
+      toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
+  });
 }
+
 
 function countProjectTypeName(ProjectTypeName) {
   var elements = document.querySelectorAll('[data-selenium-test="card-property"] [data-test-id="cdbc-property-value"] span span');
