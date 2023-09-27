@@ -376,7 +376,7 @@ function closeSidebar() {
 }
 
 
-function createFilterControls(sidebar, titleText, items, countFunction, imagePairs, eventHandler) {
+function createFilterControls(sidebar, titleText, items, countFunction, imagePairs) {
   let title = document.createElement('h2');
   title.textContent = titleText;
   sidebar.appendChild(title);
@@ -385,34 +385,34 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
   container.id = titleText.replace(/\s+/g, '-').toLowerCase() + '-container';
 
   items.forEach(item => {
-    let control = document.createElement('div');
-    let checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = item;
-    checkbox.checked = true;
+      let control = document.createElement('div');
+      let checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = item;
+      checkbox.checked = true;
 
-    let label = document.createElement('label');
-    label.htmlFor = item;
-    label.style.marginLeft = "5px";
+      let label = document.createElement('label');
+      label.htmlFor = item;
+      label.style.marginLeft = "5px";
 
-    let img = document.createElement('img');
-    if (imagePairs[item]) {
-      img.src = chrome.runtime.getURL(imagePairs[item]);
-      img.style.height = '15px';
-      img.style.width = '15px';
-      img.style.marginRight = '5px';
-    } else {
-      console.error('No image found for item: ', item);
-    }
+      let img = document.createElement('img');
+      if (imagePairs[item]) {
+          img.src = chrome.runtime.getURL(imagePairs[item]);
+          img.style.height = '15px';
+          img.style.width = '15px';
+          img.style.marginRight = '5px';
+      } else {
+          console.error('No image found for item: ', item);
+      }
 
-    label.appendChild(img);
-    label.appendChild(document.createTextNode(item + ' (' + countFunction(item) + ')'));
+      label.appendChild(img);
+      label.appendChild(document.createTextNode(item + ' (' + countFunction(item) + ')'));
 
-    control.appendChild(checkbox);
-    control.appendChild(label);
-    container.appendChild(control);
+      control.appendChild(checkbox);
+      control.appendChild(label);
+      container.appendChild(control);
 
-    checkbox.addEventListener('change', eventHandler);
+      checkbox.addEventListener('change', filterCards);  // Lier directement la fonction filterCards à l'événement change
   });
 
   sidebar.appendChild(container);
@@ -426,16 +426,17 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
   let isAllChecked = true;
 
   toggleCheckAll.addEventListener('click', function() {
-    let checkboxes = document.querySelectorAll(`#${container.id} input[type="checkbox"]`);
-    isAllChecked = !isAllChecked;
-    checkboxes.forEach((checkbox) => {
-      checkbox.checked = isAllChecked;
-      eventHandler({target: checkbox});
-    });
+      let checkboxes = document.querySelectorAll(`#${container.id} input[type="checkbox"]`);
+      isAllChecked = !isAllChecked;
+      checkboxes.forEach((checkbox) => {
+          checkbox.checked = isAllChecked;
+          filterCards();  // Appeler filterCards après avoir changé l'état de la case à cocher
+      });
 
-    toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
+      toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
   });
 }
+
 
 
 function countLabelInCards(countryName) {
@@ -452,68 +453,36 @@ function countLabelInCards(countryName) {
 }
 
 
-function filterCards(e) {
-  let label_id = e.target.id;
-  let isChecked = e.target.checked;
-  
-  // Find all the maps in the country and change their display style
-  document.querySelectorAll('[data-test-id="cdbc-property-value"]').forEach(elem => {
-    if(elem.textContent.includes(label_id)){
-      elem.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
-      
-    }
+function getCardCountry(card) {
+  let countryElement = card.querySelector('[data-test-id="cdbc-property-1"] [data-test-id="cdbc-property-value"] span');
+  return countryElement ? countryElement.textContent.trim() : null;
+}
+
+function getCardProjectType(card) {
+  let projectTypeElement = card.querySelector('[data-test-id="cdbc-property-2"] [data-test-id="cdbc-property-value"] span');
+  return projectTypeElement ? projectTypeElement.textContent.trim() : null;
+}
+
+
+function filterCards() {
+  let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+  let checkedProjectTypes = [...document.querySelectorAll('#filter-by-project-type-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+
+  document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
+      let cardCountry = getCardCountry(card);
+      let cardProjectType = getCardProjectType(card);
+
+      let countryMatch = checkedCountries.includes(cardCountry);
+      let projectTypeMatch = checkedProjectTypes.includes(cardProjectType);
+
+      card.style.display = (countryMatch && projectTypeMatch) ? 'block' : 'none';
   });
-  calculateAndUpdateTotalPower();
-}
 
-function doesCardMatchFilters(card) {
-  // Vérifiez si le pays de la carte correspond aux pays cochés
-  let countryMatch = true;
-  for (let country of countries) {
-    let isChecked = document.getElementById(country).checked;
-    if (isChecked && getCardInfo(card, 'country') === country) {
-      countryMatch = true;
-      break;
-    }
-  }
-
-  // Vérifiez si le type de projet de la carte correspond aux types cochés
-  let projectTypeMatch = true;
-  for (let projectType of projectTypes) {
-    let isChecked = document.getElementById(projectType).checked;
-    if (isChecked && getCardInfo(card, 'projectType') === projectType) {
-      projectTypeMatch = true;
-      break;
-    }
-  }
-
-  return countryMatch && projectTypeMatch;
+  // Mise à jour de toutes autres fonctions dépendantes, comme le calcul du total, si nécessaire
+  // calculateAndUpdateTotalPower();
 }
 
 
-function getCardInfo(card, infoType) {
-  let infoElement = card.querySelector('[data-test-id="cdbc-property-value"]');
-  
-  if (!infoElement) return null; // Si aucun élément n'est trouvé, retournez null
-
-  let infoText = infoElement.textContent.trim();
-
-  if (infoType === 'country') {
-      for (let country of countries) { // en supposant que 'countries' est un tableau des noms des pays
-          if (infoText.includes(country)) {
-              return country;
-          }
-      }
-  } else if (infoType === 'projectType') {
-      for (let projectType of projectTypes) { // en supposant que 'projectTypes' est un tableau des noms de types de projets
-          if (infoText.includes(projectType)) {
-              return projectType;
-          }
-      }
-  }
-
-  return null; // Si aucune correspondance n'est trouvée, retournez null
-}
 
 
 function initializeFilters() {
@@ -526,11 +495,6 @@ function initializeFilters() {
     });
   });
 }
-
-
-
-
-
 
 // ---- Wait functions //
 
