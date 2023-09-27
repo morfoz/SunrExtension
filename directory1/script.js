@@ -162,12 +162,12 @@ function toggleCustomMenu() {
   });
 }
 
-function replaceProjectType() {
+function handleLabelActions() {
   // Select all label elements
   var labels = document.querySelectorAll('span[data-test-id="cdbc-property-label"]');
 
   // Define a function to get next element of a certain tag
-  function getNextElement (element, tagName) {
+  function getNextElement(element, tagName) {
     while (element = element.nextSibling) {
       if (element.tagName.toLowerCase() === tagName) {
         return element;
@@ -176,53 +176,40 @@ function replaceProjectType() {
     return null;
   }
 
-  // Check if any labels were found
-  if (labels.length > 0) {
-    labels.forEach(function (label) {
-      // Check if the text content contains 'Project type:'
-      if (label.textContent.trim() === 'Project type:') {
-        // Find the following sibling which contains the value
-        var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
+  labels.forEach(function(label) {
+    // Common actions (ulAncestor and divElement) needed for both 'Project type:' and 'Country'
+    var ulAncestor = label.closest('ul');
+    var divElement = ulAncestor ? getNextElement(ulAncestor, 'span') : null;
 
-        // Get the trimmed text content of the value
-        var text = valueSpan ? valueSpan.textContent.trim() : '';
-
-        // Check if the text is in the lookup table
-        if (text in textImagePairs) {
-          // Create a new img element
-          var imgElement = document.createElement('img');
-
-          // Set the img src to the image in your extension's files
-          imgElement.src = chrome.runtime.getURL(textImagePairs[text]);
-
-          // Set the style properties of the image
-          imgElement.style.height = '20px';
-          imgElement.style.verticalAlign = 'middle';
-          imgElement.title = text;
-
-          // Create a new span element with class "fStvms" and append imgElement
-          var newSpan = document.createElement('span');
-          newSpan.className = "fStvms tag";
-          newSpan.appendChild(imgElement);
-          console.log(newSpan)
-
-          // Get closest 'ul' ancestor
-          var ulAncestor = label.closest('ul');
-
-          // Find the next div element after the 'ul' ancestor
-          var divElement = ulAncestor ? getNextElement(ulAncestor, 'span') : null;
-
-          // Check if div element is found
-          if (divElement) {
-            // Add the new span to the div element
-            divElement.appendChild(newSpan);
-          }
+    if (label.textContent.trim() === 'Project type:') {
+      label.parentElement.style.display = 'none';
+      var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
+      var text = valueSpan ? valueSpan.textContent.trim() : '';
+      if (text in textImagePairs) {
+        var imgElement = document.createElement('img');
+        imgElement.src = chrome.runtime.getURL(textImagePairs[text]);
+        imgElement.style.height = '20px';
+        imgElement.style.verticalAlign = 'middle';
+        imgElement.title = text;
+        var newSpan = document.createElement('span');
+        newSpan.className = "fStvms tag";
+        newSpan.appendChild(imgElement);
+        if (divElement) {
+          divElement.appendChild(newSpan);
         }
       }
-    });
-  } else {
-    console.log('No labels with the specified text found.');
-  }
+
+    } else if (label.textContent.includes('Country')) {
+      label.parentElement.style.display = 'none';
+      var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
+      var newSpan = document.createElement('span');
+      newSpan.className = "fStvms tag";
+      newSpan.innerText = valueSpan ? valueSpan.textContent : '';
+      if (divElement) {
+        divElement.appendChild(newSpan);
+      }
+    }
+  });
 }
 
 
@@ -264,54 +251,6 @@ function replaceFlagEmojis() {
 }
 
 // Function to hide labels with 'Country'
-function hideCountryLabel() {
-  // Select all label elements
-  var labels = document.querySelectorAll('span[data-test-id="cdbc-property-label"]');
-
-  // Check if any labels were found
-  if (labels.length > 0) {
-    labels.forEach(function (label) {
-      // Check if the text content contains 'Country'
-      if (label.textContent.includes('Country')) {
-        // Set the style of parent div to display none
-        label.parentElement.style.display = 'none';
-
-        // Find the following sibling which contains the value
-        var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
-
-        // Create a new span element with the value text
-        var newSpan = document.createElement('span');
-        newSpan.className="fStvms tag"
-        newSpan.innerText = valueSpan ? valueSpan.textContent : '';
-        console.log(newSpan.innerText)
-
-        // Define a function to get next element of a certain tag
-        function getNextElement (element, tagName) {
-          while (element = element.nextSibling) {
-            if (element.tagName.toLowerCase() === tagName) {
-              return element;
-            }
-          }
-          return null;
-        }
-
-        // Get closest 'ul' ancestor
-        var ulAncestor = label.closest('ul');
-
-        // Find the next div element after the 'ul' ancestor
-        var divElement = ulAncestor ? getNextElement(ulAncestor, 'span') : null;
-
-        // Check if div element is found
-        if (divElement) {
-          // Add the new span to the div element
-          divElement.appendChild(newSpan);
-        }
-      }
-    });
-  } else {
-    console.log('No labels with the specified text found.');
-  }
-}
 
 
 function toggleHeader() {
@@ -437,6 +376,8 @@ function closeSidebar() {
   document.getElementById('openBtn').style.display = 'block'; // Displaying the open button when sidebar is closed
 }
 
+
+
 function createCountryControls(sidebar) {
 let title = document.createElement('h2');
 title.textContent = 'Filter by country';
@@ -551,139 +492,6 @@ function initializeFilters() {
 
 
 
-// ---- project types sidebar
-
-/// List of project types ⚠️ THIS DEPENDS ON PROJECT IMAGE CHANGER replaceTags
-
-function createProjectTypeControls(sidebar) {
-  // Add a title to the sidebar
-  let title = document.createElement('h2');
-  title.textContent = 'Filter by project type';
-  sidebar.appendChild(title);
-
-  // Create a container for all the project type checkboxes
-  let container = document.createElement('div');
-  container.id = 'project-types-container';
-
-  // Create control elements for each type of project
-  projectTypes.forEach(type => {
-      let control = document.createElement('div');
-      let checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = type;
-      checkbox.checked = true;
-      let label = document.createElement('label');
-      label.htmlFor = type;
-      label.style.marginLeft = "5px";
-      
-      // Create image element for each type
-      if (textImagePairs[type]) {
-          let img = document.createElement('img');
-          img.src = chrome.runtime.getURL(textImagePairs[type]);
-          img.style.height = '15px';
-          img.style.width = '15px';
-          img.style.marginRight = '5px';
-          label.appendChild(img);  // append the image to the label
-      } else {
-          console.error('No image found for type: ', type);
-      }
-      
-      label.appendChild(document.createTextNode(type));
-      label.innerHTML +=  ' ('  + countProjectTypeName(type) + ')';
-
-      control.appendChild(checkbox);
-      control.appendChild(label);
-      container.appendChild(control);
-
-      // Listen to changes in checkbox status
-      checkbox.addEventListener('change', handleProjectTypeCheckChange);
-  });
-
-  // Append the container to the sidebar
-  sidebar.appendChild(container);
-
-  // Add a "Uncheck All" element
-  let toggleCheckAll = document.createElement('p');
-  toggleCheckAll.textContent = 'Uncheck All';
-  toggleCheckAll.style.fontWeight = 'bold';
-  toggleCheckAll.style.cursor = 'pointer';
-  sidebar.appendChild(toggleCheckAll);
-
-  let isAllChecked = true;
-
-  // Handle the "Uncheck All" element click
-  toggleCheckAll.addEventListener('click', function() {
-      let checkboxes = document.querySelectorAll('#project-types-container input[type="checkbox"]');
-      isAllChecked = !isAllChecked; // Toggle the flag
-      checkboxes.forEach((checkbox) => {
-          checkbox.checked = isAllChecked;
-          handleProjectTypeCheckChange({target: checkbox});
-      });
-      toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
-  });
-}
-
-
-function countProjectTypeName(ProjectTypeName) {
-  var elements = document.querySelectorAll('[data-selenium-test="card-property"] [data-test-id="cdbc-property-value"] span span');
-  var count = 0;
-  
-  elements.forEach(function(element) {
-    if (element.textContent.includes(ProjectTypeName)) {
-      count++;
-    }
-  });
-  
-  return count;
-}
-
-
-function handleProjectTypeCheckChange(e) {
-    let type = e.target.id;
-    let isChecked = e.target.checked;
-
-    // Find all the cards of the project type and change their display style
-    document.querySelectorAll('[data-selenium-test="card-property"] [data-test-id="cdbc-property-value"]').forEach(prop => {
-        if(prop.textContent.includes(type)){
-            prop.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
-          }
-        });
-        calculateAndUpdateTotalPower();
-}
-
-
-function initializeProjectTypeFilters() {
-    // Initialise filters
-    projectTypes.forEach(type => {
-        document.querySelectorAll('.private-truncated-string__inner img[title]').forEach(img => {
-            if(img.title.includes(type)){
-                img.closest('[data-test-id="cdb-column-item"]').style.display = 'block';
-            }
-        });
-    });
-}
-
-// not display the second line of the columns footers
-
-function hideProjectTypeProperty() {
-  // Get all card-property elements
-  let cardPropertyElements = document.querySelectorAll('[data-selenium-test="card-property"]');
-
-  // Iterate over each card-property element
-  cardPropertyElements.forEach((cardProperty) => {
-    // Get the cdbc-property-value elements within the current card-property
-    let cdbcPropertyValueElements = cardProperty.querySelectorAll('[data-test-id="cdbc-property-value"]');
-
-    // Iterate over each cdbc-property-value element
-    cdbcPropertyValueElements.forEach((element) => {
-      // Check if the innerText of the element is in the list of project types
-      if (projectTypes.includes(element.innerText)) {
-        // If it is, set the display style of the whole card to none
-        cardProperty.style.display = 'none';
-      }
-    });
-  });
-}
 
 
 
@@ -707,8 +515,6 @@ function waitCardToLoad() {
     if (elem) {
       toggleDateDisplay();
       clearInterval(checkExist);
-      hideProjectTypeProperty();
-      hideCountryLabel();
     }
   }, 500);
 }
@@ -717,7 +523,7 @@ function waitHelpToLoad() {
       var elem = document.querySelector("#help-widget-toggle");
       if (elem) {
           togglePowerDisplay();
-          replaceProjectType();
+          handleLabelActions();
           toggleHeader();
           replaceFlagEmojis();
           clearInterval(checkExist);
@@ -725,8 +531,6 @@ function waitHelpToLoad() {
           let sidebar = createSidebar();
           createCountryControls(sidebar);
           initializeFilters();
-          createProjectTypeControls(sidebar);
-initializeProjectTypeFilters();
 
       }
   }, 500);
