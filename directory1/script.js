@@ -452,19 +452,69 @@ function countLabelInCards(countryName) {
 }
 
 
-function handleCountryCheckChange(e) {
-  let country = e.target.id;
+function filterCards(e) {
+  let label_id = e.target.id;
   let isChecked = e.target.checked;
   
   // Find all the maps in the country and change their display style
   document.querySelectorAll('[data-test-id="cdbc-property-value"]').forEach(elem => {
-    if(elem.textContent.includes(country)){
+    if(elem.textContent.includes(label_id)){
       elem.closest('[data-test-id="cdb-column-item"]').style.display = isChecked ? 'block' : 'none';
       
     }
   });
   calculateAndUpdateTotalPower();
 }
+
+function doesCardMatchFilters(card) {
+  // Vérifiez si le pays de la carte correspond aux pays cochés
+  let countryMatch = true;
+  for (let country of countries) {
+    let isChecked = document.getElementById(country).checked;
+    if (isChecked && getCardInfo(card, 'country') === country) {
+      countryMatch = true;
+      break;
+    }
+  }
+
+  // Vérifiez si le type de projet de la carte correspond aux types cochés
+  let projectTypeMatch = true;
+  for (let projectType of projectTypes) {
+    let isChecked = document.getElementById(projectType).checked;
+    if (isChecked && getCardInfo(card, 'projectType') === projectType) {
+      projectTypeMatch = true;
+      break;
+    }
+  }
+
+  return countryMatch && projectTypeMatch;
+}
+
+
+function getCardInfo(card, infoType) {
+  let infoElement = card.querySelector('[data-test-id="cdbc-property-value"]');
+  
+  if (!infoElement) return null; // Si aucun élément n'est trouvé, retournez null
+
+  let infoText = infoElement.textContent.trim();
+
+  if (infoType === 'country') {
+      for (let country of countries) { // en supposant que 'countries' est un tableau des noms des pays
+          if (infoText.includes(country)) {
+              return country;
+          }
+      }
+  } else if (infoType === 'projectType') {
+      for (let projectType of projectTypes) { // en supposant que 'projectTypes' est un tableau des noms de types de projets
+          if (infoText.includes(projectType)) {
+              return projectType;
+          }
+      }
+  }
+
+  return null; // Si aucune correspondance n'est trouvée, retournez null
+}
+
 
 function initializeFilters() {
   // Initialize filters
@@ -515,8 +565,8 @@ function waitHelpToLoad() {
       replaceFlagEmojis();
       clearInterval(checkExist);
       let sidebar = createFiltersSidebar();
-      createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, handleCountryCheckChange);
-      createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, handleCountryCheckChange);
+      createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
+      createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
 
       initializeFilters();
       
