@@ -455,7 +455,14 @@ function countLabelInCards(countryName) {
 
 function getCardCountry(card) {
   let countryElement = card.querySelector('[data-test-id="cdbc-property-1"] [data-test-id="cdbc-property-value"] span');
-  return countryElement ? countryElement.textContent.trim() : null;
+  let countryName = countryElement ? countryElement.textContent.trim() : null;
+    
+    // Check if the country name in the card is "FR Guyana"
+    if (countryName === "FR Guyana") {
+        countryName = "Guyana";
+    }
+    
+    return countryName;
 }
 
 function getCardProjectType(card) {
