@@ -379,10 +379,10 @@ function closeSidebar() {
 function createFilterControls(sidebar, titleText, items, countFunction, imagePairs) {
   let title = document.createElement('h2');
   title.textContent = titleText;
-  sidebar.appendChild(title);
 
   let container = document.createElement('div');
   container.id = titleText.replace(/\s+/g, '-').toLowerCase() + '-container';
+  container.appendChild(title)
 
   items.forEach(item => {
       let control = document.createElement('div');
