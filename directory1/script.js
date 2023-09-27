@@ -111,7 +111,7 @@ function toggleDateDisplay() {
 }
 
 
-function togglePowerDisplay() {
+function changeCurrencyUnitInPower() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
   spans.forEach(function (span) {
     var valueSpan = span.nextElementSibling.querySelector('[data-test-id="cdbc-property-value"] span[data-selenium-test="currency-component-loaded"] span');
@@ -214,7 +214,7 @@ function handleLabelActions() {
 
 
 
-function replaceFlagEmojis() {
+function replaceEmojisByImages() {
   var elements = document.querySelectorAll('body *');
   
   elements.forEach(function (element) {
@@ -488,19 +488,6 @@ function filterCards() {
 }
 
 
-
-
-function initializeFilters() {
-  // Initialize filters
-  countries.forEach(country => {
-    document.querySelectorAll('.private-truncated-string__inner').forEach(elem => {
-      if(elem.textContent.includes(country)){
-        elem.closest('[data-test-id="cdb-column-item"]').style.display = 'block';
-      }
-    });
-  });
-}
-
 // ---- Wait functions //
 
 document.addEventListener('DOMContentLoaded', toggleHeader);
@@ -520,6 +507,7 @@ function waitCardToLoad() {
     var elem = document.querySelector('[data-test-id="cdb-column-item"]');
     if (elem) {
       toggleDateDisplay();
+      
       clearInterval(checkExist);
     }
   }, 500);
@@ -528,17 +516,16 @@ function waitHelpToLoad() {
   var checkExist = setInterval(function() {
     var elem = document.querySelector("#help-widget-toggle");
     if (elem) {
-      togglePowerDisplay();
+      changeCurrencyUnitInPower();
       handleLabelActions();
       toggleHeader();
-      replaceFlagEmojis();
-      clearInterval(checkExist);
+      replaceEmojisByImages();
+
       let sidebar = createFiltersSidebar();
       createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
       createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
-
-      initializeFilters();
       
+      clearInterval(checkExist);
     }
   }, 500);
 }
