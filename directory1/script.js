@@ -477,9 +477,7 @@ function filterCards() {
 
       card.style.display = (countryMatch && projectTypeMatch) ? 'block' : 'none';
   });
-
-  // Mise à jour de toutes autres fonctions dépendantes, comme le calcul du total, si nécessaire
-  // calculateAndUpdateTotalPower();
+  calculateAndUpdateTotalPower();
 }
 
 
