@@ -376,61 +376,61 @@ function closeSidebar() {
 function createFilterControls(sidebar, titleText, items, countFunction, imagePairs, filterMethod) {
   let title = document.createElement('h2');
   title.textContent = titleText;
-
+  
   let container = document.createElement('div');
   container.id = titleText.replace(/\s+/g, '-').toLowerCase() + '-container';
   container.appendChild(title)
-
+  
   items.forEach(item => {
-      let control = document.createElement('div');
-      let checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = item;
-      checkbox.checked = true;
-
-      let label = document.createElement('label');
-      label.htmlFor = item;
-      label.style.marginLeft = "5px";
-
-      let img = document.createElement('img');
-      if (imagePairs[item]) {
-          img.src = chrome.runtime.getURL(imagePairs[item]);
-          img.style.height = '15px';
-          img.style.width = '15px';
-          img.style.marginRight = '5px';
-      } else {
-          console.error('No image found for item: ', item);
-      }
-
-      label.appendChild(img);
-      label.appendChild(document.createTextNode(item + ' (' + countFunction(item) + ')'));
-
-      control.appendChild(checkbox);
-      control.appendChild(label);
-      container.appendChild(control);
-
-      checkbox.addEventListener('change', filterMethod);  // Lier directement la fonction filterCards à l'événement change
+    let control = document.createElement('div');
+    let checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = item;
+    checkbox.checked = true;
+    
+    let label = document.createElement('label');
+    label.htmlFor = item;
+    label.style.marginLeft = "5px";
+    
+    let img = document.createElement('img');
+    if (imagePairs[item]) {
+      img.src = chrome.runtime.getURL(imagePairs[item]);
+      img.style.height = '15px';
+      img.style.width = '15px';
+      img.style.marginRight = '5px';
+    } else {
+      console.error('No image found for item: ', item);
+    }
+    
+    label.appendChild(img);
+    label.appendChild(document.createTextNode(item + ' (' + countFunction(item) + ')'));
+    
+    control.appendChild(checkbox);
+    control.appendChild(label);
+    container.appendChild(control);
+    
+    checkbox.addEventListener('change', filterMethod);  // Lier directement la fonction filterCards à l'événement change
   });
-
+  
   sidebar.appendChild(container);
-
+  
   let toggleCheckAll = document.createElement('p');
   toggleCheckAll.textContent = 'Uncheck All';
   toggleCheckAll.style.fontWeight = 'bold';
   toggleCheckAll.style.cursor = 'pointer';
-  sidebar.appendChild(toggleCheckAll);
-
+  container.appendChild(toggleCheckAll);
+  
   let isAllChecked = true;
-
+  
   toggleCheckAll.addEventListener('click', function() {
-      let checkboxes = document.querySelectorAll(`#${container.id} input[type="checkbox"]`);
-      isAllChecked = !isAllChecked;
-      checkboxes.forEach((checkbox) => {
-          checkbox.checked = isAllChecked;
-          filterCards();  // Appeler filterCards après avoir changé l'état de la case à cocher
-      });
-
-      toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
+    let checkboxes = document.querySelectorAll(`#${container.id} input[type="checkbox"]`);
+    isAllChecked = !isAllChecked;
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = isAllChecked;
+      filterCards();  // Appeler filterCards après avoir changé l'état de la case à cocher
+    });
+    
+    toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
   });
 }
 
@@ -452,16 +452,16 @@ function getCardCountry(card) {
   let potentialElements = Array.from(card.querySelectorAll('[data-test-id^="cdbc-property-"]'));
   let countryElement = potentialElements.find(element => element.textContent.includes("Country"));
   let countryProperty = countryElement.querySelector('[data-test-id="cdbc-property-value"]');
-
+  
   console.log(countryProperty.innerHTML)
   let countryName = countryProperty ? countryProperty.textContent.trim() : null;
-    console.log(countryName)
-    // Check if the country name in the card is "FR Guyana"
-    if (countryName === "FR Guyana") {
-        countryName = "Guyana";
-    }
-    
-    return countryName;
+  console.log(countryName)
+  // Check if the country name in the card is "FR Guyana"
+  if (countryName === "FR Guyana") {
+    countryName = "Guyana";
+  }
+  
+  return countryName;
 }
 
 function getCardProjectType(card) {
@@ -473,51 +473,58 @@ function getCardProjectType(card) {
 function filterCards() {
   let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
   let checkedProjectTypes = [...document.querySelectorAll('#filter-by-project-type-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
-
+  
   document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
-      let cardCountry = getCardCountry(card);
-      let cardProjectType = getCardProjectType(card);
-
-      let countryMatch = checkedCountries.includes(cardCountry);
-      let projectTypeMatch = checkedProjectTypes.includes(cardProjectType);
-
-      card.style.display = (countryMatch && projectTypeMatch) ? 'block' : 'none';
+    let cardCountry = getCardCountry(card);
+    let cardProjectType = getCardProjectType(card);
+    
+    let countryMatch = checkedCountries.includes(cardCountry);
+    let projectTypeMatch = checkedProjectTypes.includes(cardProjectType);
+    
+    card.style.display = (countryMatch && projectTypeMatch) ? 'block' : 'none';
   });
   calculateAndUpdateTotalPower();
 }
 
 function filterCountryCards() {
   let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
-
+  
   document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
-      let cardCountry = getCardCountry(card);
-      console.log(cardCountry)
-      console.log(checkedCountries)
-      let countryMatch = checkedCountries.includes(cardCountry);
-      console.log(countryMatch)
-      card.style.display = (countryMatch) ? 'block' : 'none';
+    let cardCountry = getCardCountry(card);
+    console.log(cardCountry)
+    console.log(checkedCountries)
+    let countryMatch = checkedCountries.includes(cardCountry);
+    console.log(countryMatch)
+    card.style.display = (countryMatch) ? 'block' : 'none';
   });
   calculateAndUpdateTotalPower();
 }
 
 
 function applyFilterByPipeline(sidebar) {
-    let pipelineContent = document.querySelector("[data-selenium-test='pipelineSelector'][role='button']").textContent.trim();
-
-    switch (pipelineContent) {
-        case "PVS":
-            createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
-            createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
-            break;
-        case "AVD":
-            createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCountryCards);
-            break;
-        case "AVD Partners":
-            // No filters for AVD Partners
-            break;
-        default:
-            console.error('Unknown pipeline content: ', pipelineContent);
-    }
+  let pipelineContent = document.querySelector("[data-selenium-test='pipelineSelector'][role='button']").textContent.trim();
+  let filters = document.querySelectorAll("#mySidebar div[id^='filter-by-']");
+  
+  filters.forEach(filter => {
+    filter.parentNode.removeChild(filter);
+  });
+  switch (pipelineContent) {
+    case "PVS":
+    createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
+    createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
+    break;
+    case "AVD":
+    createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCountryCards);
+    break;
+    case "AVD Partners":
+    // No filters for AVD Partners
+    break;
+    default:
+    console.error('Unknown pipeline content: ', pipelineContent);
+  }
+  changeCurrencyUnitInPower();
+  handleLabelActions();
+  replaceEmojisByImages();
 }
 
 
@@ -545,18 +552,37 @@ function waitCardToLoad() {
     }
   }, 500);
 }
+
 function waitHelpToLoad() {
   var checkExist = setInterval(function() {
     var elem = document.querySelector("#help-widget-toggle");
     if (elem) {
-      changeCurrencyUnitInPower();
-      handleLabelActions();
       toggleHeader();
-      replaceEmojisByImages();
-
+      
       let sidebar = createFiltersSidebar();
       applyFilterByPipeline(sidebar);
+      console.log("Script started.");
       
+      const getButtonElement = () => document.querySelector("[data-selenium-test='pipelineSelector'][role='button']");
+      const getDataElement = (button) => button && button.querySelector('[data-option-text="true"]');
+      
+      let initialDataElement = getDataElement(getButtonElement());
+      let previousValue = initialDataElement ? initialDataElement.textContent.trim() : null;
+      
+      setInterval(() => {
+        let currentDataElement = getDataElement(getButtonElement());
+        if (currentDataElement) {
+          let currentValue = currentDataElement.textContent.trim();
+          if (currentValue !== previousValue) {
+            console.log("Value changed to:", currentValue);
+            
+            // Applying the filter based on the changed pipeline
+            applyFilterByPipeline(sidebar);
+            
+            previousValue = currentValue;
+          }
+        }
+      }, 1000);  // Check every second
       clearInterval(checkExist);
     }
   }, 500);
