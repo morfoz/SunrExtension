@@ -2,7 +2,7 @@
 const countries = ['Australia', 'Belgium', 'Bulgaria', 'Chile', 'Germany', 'Guyana', 'Israel', 'Italy', 'Japan', 'Luxembourg', 'Malta', 'Poland', 'Polynesia', 'Spain', 'UK', 'USA']
 countries.sort();
 
-var emojiImagePairs = {
+const emojiImagePairs = {
   '🇦🇺': 'img/flags/australia.png',
   '🇧🇪': 'img/flags/belgium.png',
   '🇧🇬': 'img/flags/bulgaria.png',
@@ -22,7 +22,7 @@ var emojiImagePairs = {
 };
 
 // Create a mapping from country names to image paths
-let countryImagePairs = {
+const countryImagePairs = {
   'Australia': 'img/flags/australia.png',
   'Belgium': 'img/flags/belgium.png',
   'Bulgaria': 'img/flags/bulgaria.png',
@@ -42,16 +42,16 @@ let countryImagePairs = {
 };
 
 
-let projectTypes = ['Carport', 'Floating', 'Ground', 'Rooftop'];
+const projectTypes = ['Carport', 'Floating', 'Ground', 'Rooftop'];
 
-var projectImagePairs = {
+const projectImagePairs = {
   'Ground': 'img/type/ground.png',
   'Rooftop': 'img/type/rooftop.png',
   'Carport': 'img/type/carport.png',
   'Floating': 'img/type/floating.png'
 };
 
-var menuItems = [
+const menuItems = [
   { name: 'Contacts', link: 'https://app-eu1.hubspot.com/contacts/26693160/contacts' },
   { name: 'Companies', link: 'https://app-eu1.hubspot.com/contacts/26693160/companies' },
   { name: 'Deals', link: 'https://app-eu1.hubspot.com/contacts/26693160/deals' },
@@ -109,7 +109,6 @@ function toggleDateDisplay() {
     }
   });
 }
-
 
 function changeCurrencyUnitInPower() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
@@ -212,8 +211,6 @@ function handleLabelActions() {
   });
 }
 
-
-
 function replaceEmojisByImages() {
   var elements = document.querySelectorAll('body *');
   
@@ -294,9 +291,6 @@ function toggleHeader() {
   });
 }
 
-
-
-// --------------- Sidebar filter function
 // Function to calculate and update total power for each column
 function calculateAndUpdateTotalPower() {
   // Get all columns
@@ -335,6 +329,9 @@ function calculateAndUpdateTotalPower() {
 
 
 
+// --------------- Sidebar filter function
+
+
 
 // Creating the filter menu
 function createFiltersSidebar() {
@@ -363,8 +360,6 @@ function createFiltersSidebar() {
   return sidebar;
 }
 
-
-// Functions to open and close the sidebar
 function openSidebar() {
   document.getElementById('mySidebar').style.transform = 'translateX(0)';
   document.getElementById('openBtn').style.display = 'none'; // Hiding the open button when sidebar is open
@@ -376,7 +371,9 @@ function closeSidebar() {
 }
 
 
-function createFilterControls(sidebar, titleText, items, countFunction, imagePairs) {
+
+
+function createFilterControls(sidebar, titleText, items, countFunction, imagePairs, filterMethod) {
   let title = document.createElement('h2');
   title.textContent = titleText;
 
@@ -412,7 +409,7 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
       control.appendChild(label);
       container.appendChild(control);
 
-      checkbox.addEventListener('change', filterCards);  // Lier directement la fonction filterCards à l'événement change
+      checkbox.addEventListener('change', filterMethod);  // Lier directement la fonction filterCards à l'événement change
   });
 
   sidebar.appendChild(container);
@@ -437,8 +434,6 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
   });
 }
 
-
-
 function countLabelInCards(countryName) {
   var elements = document.querySelectorAll('[data-test-id="cdbc-property-value"] span span');
   var count = 0;
@@ -454,9 +449,13 @@ function countLabelInCards(countryName) {
 
 
 function getCardCountry(card) {
-  let countryElement = card.querySelector('[data-test-id="cdbc-property-1"] [data-test-id="cdbc-property-value"] span');
-  let countryName = countryElement ? countryElement.textContent.trim() : null;
-    
+  let potentialElements = Array.from(card.querySelectorAll('[data-test-id^="cdbc-property-"]'));
+  let countryElement = potentialElements.find(element => element.textContent.includes("Country"));
+  let countryProperty = countryElement.querySelector('[data-test-id="cdbc-property-value"]');
+
+  console.log(countryProperty.innerHTML)
+  let countryName = countryProperty ? countryProperty.textContent.trim() : null;
+    console.log(countryName)
     // Check if the country name in the card is "FR Guyana"
     if (countryName === "FR Guyana") {
         countryName = "Guyana";
@@ -485,6 +484,40 @@ function filterCards() {
       card.style.display = (countryMatch && projectTypeMatch) ? 'block' : 'none';
   });
   calculateAndUpdateTotalPower();
+}
+
+function filterCountryCards() {
+  let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+
+  document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
+      let cardCountry = getCardCountry(card);
+      console.log(cardCountry)
+      console.log(checkedCountries)
+      let countryMatch = checkedCountries.includes(cardCountry);
+      console.log(countryMatch)
+      card.style.display = (countryMatch) ? 'block' : 'none';
+  });
+  calculateAndUpdateTotalPower();
+}
+
+
+function applyFilterByPipeline(sidebar) {
+    let pipelineContent = document.querySelector("[data-selenium-test='pipelineSelector'][role='button']").textContent.trim();
+
+    switch (pipelineContent) {
+        case "PVS":
+            createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
+            createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
+            break;
+        case "AVD":
+            createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCountryCards);
+            break;
+        case "AVD Partners":
+            // No filters for AVD Partners
+            break;
+        default:
+            console.error('Unknown pipeline content: ', pipelineContent);
+    }
 }
 
 
@@ -522,8 +555,7 @@ function waitHelpToLoad() {
       replaceEmojisByImages();
 
       let sidebar = createFiltersSidebar();
-      createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
-      createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
+      applyFilterByPipeline(sidebar);
       
       clearInterval(checkExist);
     }
