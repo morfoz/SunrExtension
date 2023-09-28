@@ -63,7 +63,7 @@ const menuItems = [
 // functions
 
 function addCustomLogo() {
-  var logos = Array.from(document.getElementsByClassName('nav-logo'));
+  var logos = Array.from(document.querySelectorAll('[data-test-id="icon-hubspot-logo"]'));
   logos.forEach(function (logo) {
     // Skip logos that have already been updated
     if (logo.dataset.updated) {
@@ -74,7 +74,7 @@ function addCustomLogo() {
     newLogo.src = chrome.runtime.getURL('img/logo-sunr.png');
     newLogo.className = 'nav-logo';
     newLogo.style.maxHeight = '30px';
-    newLogo.style.verticalAlign = 'middle';
+    newLogo.style.verticalAlign = 'text-bottom';
     logo.parentNode.insertBefore(newLogo, logo);
     logo.style.display = 'none';
     
@@ -147,19 +147,32 @@ function changeCurrencyUnitInPower() {
 function toggleCustomMenu() {
   var ul = document.querySelector('ul.primary-links');
   while (ul.children.length > 1) {
-    ul.removeChild(ul.lastChild);
+      ul.removeChild(ul.lastChild);
   }
-  
+
   menuItems.forEach(function (menuItem) {
-    var li = document.createElement('li');
-    var a = document.createElement('a');
-    a.textContent = menuItem.name;
-    a.href = menuItem.link;
-    a.classList.add("primary-link");  // Add class to each element
-    li.appendChild(a);
-    ul.appendChild(li);
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.textContent = menuItem.name;
+      a.href = menuItem.link;
+      a.classList.add("primary-link");  // Add class to each element
+      li.appendChild(a);
+      ul.appendChild(li);
   });
+
+  var headerElement = document.getElementById('hs-global-toolbar');
+  var navElement = headerElement.querySelector('nav');
+  if (navElement) {
+      headerElement.insertBefore(ul, navElement);
+  }
+
+  // Remove the element with id="navbar" and role="navigation"
+  var navbarElement = document.querySelector('nav[id="navbar"][role="navigation"]');
+  if (navbarElement) {
+      navbarElement.remove();
+  }
 }
+
 
 function handleLabelActions() {
   // Select all label elements
@@ -222,8 +235,8 @@ function replaceEmojisByImages() {
           if (index !== -1) {
             var imgElement = document.createElement('img');
             imgElement.src = chrome.runtime.getURL(emojiImagePairs[emoji]);
-            imgElement.style.height = '18px';
-            imgElement.style.verticalAlign = 'middle';
+            imgElement.style.height = '20px';
+            imgElement.style.verticalAlign = 'text-bottom';
             
             
             var textBefore = child.nodeValue.substring(0, index);
@@ -345,7 +358,7 @@ function createFiltersSidebar() {
     let openBtn = document.createElement('button');
     openBtn.id = 'openBtn'; 
     openBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg>`;
-    openBtn.style.cssText = 'position: fixed; top: 50%; right: 20px; z-index: 9999; cursor: pointer; background: none; border: none;';
+    openBtn.style.cssText = 'position: fixed; top: 50%; right: 20px; z-index: 1110; cursor: pointer; background: none; border: none;';
     openBtn.addEventListener('click', openSidebar);
     document.body.appendChild(openBtn);
   }
@@ -395,8 +408,8 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
     let img = document.createElement('img');
     if (imagePairs[item]) {
       img.src = chrome.runtime.getURL(imagePairs[item]);
-      img.style.height = '15px';
-      img.style.width = '15px';
+      img.style.height = '20px';
+      img.style.width = '20px';
       img.style.marginRight = '5px';
     } else {
       console.error('No image found for item: ', item);
