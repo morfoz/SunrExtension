@@ -265,7 +265,7 @@ function replaceEmojisByImages() {
 
 function toggleHeader() {
   // Locate the header and filter bar
-  let header = document.querySelector('header');
+  let header = document.querySelector('header[role="presentation"]');
   let filterBar = document.querySelector('[data-onboarding="filter-bar"]');
   
   // If the checkbox already exists, don't add it again
@@ -295,7 +295,7 @@ function toggleHeader() {
   
   // Toggle the display of the header and filter bar when the checkbox is checked
   checkbox.addEventListener('change', function() {
-    let header = document.querySelector('header');
+    let header = document.querySelector('header[role="presentation"]');
     let filterBar = document.querySelector('[data-onboarding="filter-bar"]');
     header.style.display = this.checked ? 'block' : 'none';
     if(filterBar) { // Check if filterBar is not null
