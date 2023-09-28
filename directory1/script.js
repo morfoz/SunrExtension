@@ -414,9 +414,14 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
   
   let container = document.createElement('div');
   container.id = titleText.replace(/\s+/g, '-').toLowerCase() + '-container';
-  container.appendChild(title)
+  container.appendChild(title);
   
   items.forEach(item => {
+    let itemCount = countFunction(item);
+    
+    // Ne pas créer de contrôle pour les éléments avec un compte de 0
+    if (itemCount === 0) return;  // Si le nombre est 0, on saute cet élément
+
     let control = document.createElement('div');
     let checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -438,7 +443,7 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
     }
     
     label.appendChild(img);
-    label.appendChild(document.createTextNode(item + ' (' + countFunction(item) + ')'));
+    label.appendChild(document.createTextNode(item + ' (' + itemCount + ')'));
     
     control.appendChild(checkbox);
     control.appendChild(label);
@@ -468,6 +473,7 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
     toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
   });
 }
+
 
 function countLabelInCards(countryName) {
   var elements = document.querySelectorAll('[data-test-id="cdbc-property-value"] span span');
