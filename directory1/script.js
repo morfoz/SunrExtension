@@ -350,17 +350,39 @@ function calculateAndUpdateTotalPower() {
 function createFiltersSidebar() {
   let sidebar = document.createElement('div');
   sidebar.id = 'mySidebar';
-  sidebar.style.cssText = 'z-index:1016; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f5; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
+  sidebar.style.cssText = 'z-index:1110; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f5; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
   document.body.appendChild(sidebar);
   
   if(window.location.pathname.endsWith('/board')) {
     // Creating the button to open the sidebar
-    let openBtn = document.createElement('button');
-    openBtn.id = 'openBtn'; 
-    openBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg>`;
-    openBtn.style.cssText = 'position: fixed; top: 50%; right: 20px; z-index: 1110; cursor: pointer; background: none; border: none;';
-    openBtn.addEventListener('click', openSidebar);
-    document.body.appendChild(openBtn);
+    // Create container div
+// Create container div
+let container = document.createElement('div');
+container.id = 'filtersContainer'; // Added ID
+
+// Create and style the button
+let openBtn = document.createElement('button');
+openBtn.id = 'openBtn'; 
+openBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"/></svg>`;
+container.addEventListener('click', openSidebar);
+
+// Create vertical "FILTERS" label
+let filtersLabel = document.createElement('div');
+let filterText = "FILTERS";
+for (let char of filterText) {
+    let charSpan = document.createElement('span');
+    charSpan.innerText = char;
+    filtersLabel.appendChild(charSpan);
+}
+
+// Append elements to the container
+container.appendChild(openBtn);
+container.appendChild(filtersLabel);
+
+// Append the container to the body
+document.body.appendChild(container);
+
+
   }
   
   // Adding a close button for the sidebar
