@@ -218,3 +218,7 @@ html.set-crm-index-page-height-with-86px-nav, html.set-crm-index-page-height-wit
 .private-media{
   margin-top:5px;
 }
+
+small[data-test-id="summary-line-2"]{
+  display:none;
+}
