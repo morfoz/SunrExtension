@@ -437,7 +437,8 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
       img.src = chrome.runtime.getURL(imagePairs[item]);
       img.style.height = '20px';
       img.style.width = '20px';
-      img.style.marginRight = '5px';
+      img.style.marginRight = '5px'; 
+      img.style.verticalAlign= 'text-bottom';
     } else {
       console.error('No image found for item: ', item);
     }

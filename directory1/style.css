@@ -214,3 +214,7 @@ section[class="hs-toolbar-logo-container"]:hover{
 html.set-crm-index-page-height-with-86px-nav, html.set-crm-index-page-height-with-86px-nav div.app, html.set-crm-index-page-height-with-86px-nav body {
   height: calc(100vh - 32px)!important;
 }
+
+.private-media{
+  margin-top:5px;
+}
