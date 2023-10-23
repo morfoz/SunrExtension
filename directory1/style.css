@@ -10,6 +10,14 @@ a[data-test-id="nav-settings"]:hover, #nav-primary-home:hover .menu:hover, .menu
 }
 
 /* menu */
+li[data-portal-hook="account-menu"] button:hover{
+  background-color: var(--secondaryColor) !important;
+}
+
+#hs-global-toolbar-icons li:hover{
+  background-color:var(--secondaryColor)!important;
+}
+
 #hs-nav-v4 .primary-link{
   line-height: 32px!important;
 }
