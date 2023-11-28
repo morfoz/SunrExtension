@@ -86,16 +86,27 @@ function addCustomLogo() {
 function toggleDateDisplay() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
   spans.forEach(function (span) {
-    if (span.textContent === 'Expected RTB:') {
+    if (span.textContent === 'RTB date:') {
       var dateSpan = span.nextElementSibling.querySelector('[data-test-id="cdbc-property-value"] span');
       
-      // Skip spans that have already been updated
       if (dateSpan.dataset.updated) {
         return;
       }
       
-      var dateParts = dateSpan.textContent.split('/');
-      var date = new Date(dateParts[1] + '/' + dateParts[0] + '/' + dateParts[2]);
+      var dateText = dateSpan.textContent;
+      var dateParts;
+      
+      // Détection du format de date (français ou anglais) et séparation des composantes de la date
+      if (dateText.includes('/')) {
+        dateParts = dateText.split('/');
+        // Si le premier segment est supérieur à 12, cela indique un format français (JJ/MM/AAAA)
+        if (parseInt(dateParts[0]) > 12) {
+          date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        } else { // Sinon, format anglais (MM/JJ/AAAA)
+          date = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+        }
+      }
+      
       var quarter = Math.ceil((date.getMonth() + 1) / 3);
       
       var quarterSpan = document.createElement('span');
@@ -104,11 +115,11 @@ function toggleDateDisplay() {
       dateSpan.parentNode.appendChild(quarterSpan);
       dateSpan.style.display = 'none';
       
-      // Mark this dateSpan as updated
       dateSpan.dataset.updated = 'true';
     }
   });
 }
+
 
 function changeCurrencyUnitInPower() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
