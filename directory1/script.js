@@ -548,7 +548,7 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
     isAllChecked = !isAllChecked;
     checkboxes.forEach((checkbox) => {
       checkbox.checked = isAllChecked;
-      filterCards();  // Appeler filterCards après avoir changé l'état de la case à cocher
+      filterMethod();  // Appeler filterCards après avoir changé l'état de la case à cocher
     });
     
     toggleCheckAll.textContent = isAllChecked ? 'Uncheck All' : 'Check All';
