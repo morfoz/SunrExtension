@@ -34,7 +34,19 @@
                 "img/flags/polynesia.png",
                 "img/flags/spain.png",
                 "img/flags/uk.png",
-                "img/flags/usa.png"
+                "img/flags/usa.png",
+                "img/flags/usa.png",
+                "img/crop/apple.png",
+                "img/crop/apricot.png",
+                "img/crop/berry.png",
+                "img/crop/cherry.png",
+                "img/crop/hazelnut.png",
+                "img/crop/kiwi.png",
+                "img/crop/other.png",
+                "img/crop/peach.png",
+                "img/crop/pear.png",
+                "img/crop/table_grape.png",
+                "img/crop/wine_grape.png"
             ],
             "matches": ["<all_urls>"]
         }

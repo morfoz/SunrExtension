@@ -1,5 +1,6 @@
 // variables
 const countries = ['Australia', 'Belgium', 'Bulgaria', 'Chile', 'Germany', 'Guyana', 'Israel', 'Italy', 'Japan', 'Luxembourg', 'Malta', 'Poland', 'Polynesia', 'Spain', 'UK', 'USA']
+const cropTypes = ['Apple', 'Apricot', 'Berry', 'Cherry', 'Hazelnut', 'Kiwi', 'Peach', 'Pear', 'Table grape', 'Wine grape', 'Other']
 countries.sort();
 
 const emojiImagePairs = {
@@ -41,6 +42,19 @@ const countryImagePairs = {
   'USA': 'img/flags/usa.png'
 };
 
+const cropImagesPairs = {
+  'Apple': 'img/crop/apple.png', 
+  'Apricot': 'img/crop/apricot.png', 
+  'Berry': 'img/crop/berry.png', 
+  'Cherry': 'img/crop/cherry.png', 
+  'Hazelnut': 'img/crop/halzelnut.png', 
+  'Kiwi': 'img/crop/kiwi.png', 
+  'Peach': 'img/crop/peach.png', 
+  'Pear': 'img/crop/pear.png', 
+  'Table grape': 'img/crop/table_grape.png', 
+  'Wine grape': 'img/crop/wine_grape.png', 
+  'Other': 'img/crop/other.png'
+}
 
 const projectTypes = ['Carport', 'Floating', 'Ground', 'Rooftop'];
 
@@ -119,7 +133,6 @@ function toggleDateDisplay() {
     }
   });
 }
-
 
 function changeCurrencyUnitInPower() {
   var spans = document.querySelectorAll('[data-test-id="cdbc-property-label"]');
@@ -231,6 +244,24 @@ function handleLabelActions() {
       if (divElement) {
         divElement.appendChild(newSpan);
       }
+    } else if (label.textContent.trim() === 'Type of crops:') {
+      console.log('here i am')
+      label.parentElement.style.display = 'none';
+      var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
+      var text = valueSpan ? valueSpan.textContent.trim() : '';
+      if (text in cropImagesPairs) {
+        var imgElement = document.createElement('img');
+        imgElement.src = chrome.runtime.getURL(cropImagesPairs[text]);
+        imgElement.style.height = '20px';
+        imgElement.style.verticalAlign = 'text-bottom';
+        imgElement.title = text;
+        var newSpan = document.createElement('span');
+        newSpan.className = "fStvms tag";
+        newSpan.appendChild(imgElement);
+        if (divElement) {
+          divElement.appendChild(newSpan);
+        }
+      }
     }
   });
 }
@@ -272,6 +303,33 @@ function replaceEmojisByImages() {
 }
 
 // Function to hide labels with 'Country'
+
+
+function adjustCardsForOnHoldStatus() {
+  // Sélectionner toutes les colonnes
+  let columns = document.querySelectorAll('div[data-test-id="cdb-column"]');
+  
+  // Itérer sur chaque colonne
+  columns.forEach((column) => {
+    // Obtenir toutes les cartes de la colonne qui ne sont pas cachées
+    let cards = column.querySelectorAll('div[data-test-id="cdb-column-item"]:not([style="display: none;"])');
+    
+    // Itérer sur chaque carte
+    cards.forEach((card) => {
+      // Vérifier si la carte contient la propriété "On hold"
+      var onHoldTag = card.querySelector('.Tags__TagWrapper-ou0fag-0 .UITag__Tag-kcqguc-0');
+      if (onHoldTag && onHoldTag.textContent.includes('❗ On hold ❗')) {
+          // Cacher le tag "On hold"
+          onHoldTag.style.display = 'none';
+
+          // Changer la couleur de fond du premier élément enfant de la carte
+          if (card.firstChild) {
+              card.firstChild.firstChild.firstChild.style.backgroundColor = '#f2dede'; // par exemple, une couleur rouge pâle pour indiquer l'état "On hold"
+          }
+      }
+    });
+  });
+}
 
 
 function toggleHeader() {
@@ -346,7 +404,7 @@ function calculateAndUpdateTotalPower() {
     if (footerElement) {
       footerElement.innerText = `${totalPower} MWp`;
     } else {
-      console.log('Footer element not found in column');
+      console.error('Footer element not found in column');
     }
   });
 }
@@ -506,9 +564,7 @@ function getCardCountry(card) {
   let countryElement = potentialElements.find(element => element.textContent.includes("Country"));
   let countryProperty = countryElement.querySelector('[data-test-id="cdbc-property-value"]');
   
-  console.log(countryProperty.innerHTML)
   let countryName = countryProperty ? countryProperty.textContent.trim() : null;
-  console.log(countryName)
   // Check if the country name in the card is "FR Guyana"
   if (countryName === "FR Guyana") {
     countryName = "Guyana";
@@ -522,8 +578,35 @@ function getCardProjectType(card) {
   return projectTypeElement ? projectTypeElement.textContent.trim() : null;
 }
 
+function getCardCropType(card) {
+  let projectTypeElement = card.querySelector('[data-test-id="cdbc-property-1"] [data-test-id="cdbc-property-value"] span');
+  console.log(projectTypeElement)
+  return projectTypeElement ? projectTypeElement.textContent.trim() : null;
+}
+
 
 function filterCards() {
+  let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+  let checkedProjectTypes = [...document.querySelectorAll('#filter-by-project-type-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+  let checkedCropTypes = [...document.querySelectorAll('#filter-by-crop-types-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+
+  document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
+    let cardCountry = getCardCountry(card);
+    let cardProjectType = getCardProjectType(card);
+    let cardCropType = getCardCropType(card);  // Vous devez créer cette fonction pour obtenir le type de culture d'une carte
+
+    let countryMatch = checkedCountries.includes(cardCountry);
+    let projectTypeMatch = checkedProjectTypes.includes(cardProjectType);
+    let cropTypeMatch = checkedCropTypes.includes(cardCropType);  // Vérifiez si le type de culture de la carte est sélectionné
+
+    card.style.display = (countryMatch && projectTypeMatch && cropTypeMatch) ? 'block' : 'none';  // Ajoutez cropTypeMatch à la condition
+  });
+  calculateAndUpdateTotalPower();
+}
+
+
+
+function filterCardsPVS() {
   let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
   let checkedProjectTypes = [...document.querySelectorAll('#filter-by-project-type-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
   
@@ -539,19 +622,37 @@ function filterCards() {
   calculateAndUpdateTotalPower();
 }
 
+function filterCardsAVD() {
+  let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+  let checkedCropTypes = [...document.querySelectorAll('#filter-by-crop-types-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
+  
+  document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
+    let cardCountry = getCardCountry(card);
+    let cardCropType = getCardCropType(card);  // Vous devez créer cette fonction pour obtenir le type de culture d'une carte
+    
+    let countryMatch = checkedCountries.includes(cardCountry);
+    let cropTypeMatch = checkedCropTypes.includes(cardCropType);  // Vérifiez si le type de culture de la carte est sélectionné
+    
+    card.style.display = (countryMatch && cropTypeMatch) ? 'block' : 'none';
+  });
+  calculateAndUpdateTotalPower();
+}
+
+
+
+
+//to erase
 function filterCountryCards() {
   let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
   
   document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
     let cardCountry = getCardCountry(card);
-    console.log(cardCountry)
-    console.log(checkedCountries)
     let countryMatch = checkedCountries.includes(cardCountry);
-    console.log(countryMatch)
     card.style.display = (countryMatch) ? 'block' : 'none';
   });
   calculateAndUpdateTotalPower();
 }
+
 
 
 function applyFilterByPipeline(sidebar) {
@@ -563,11 +664,12 @@ function applyFilterByPipeline(sidebar) {
   });
   switch (pipelineContent) {
     case "PVS":
-    createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCards);
-    createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCards);
+    createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCardsPVS);
+    createFilterControls(sidebar, 'Filter by project type', projectTypes, countLabelInCards, projectImagePairs, filterCardsPVS);
     break;
     case "AVD":
-    createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCountryCards);
+    createFilterControls(sidebar, 'Filter by country', countries, countLabelInCards, countryImagePairs, filterCardsAVD);
+    createFilterControls(sidebar, 'Filter by crop types', cropTypes, countLabelInCards, cropImagesPairs, filterCardsAVD );
     break;
     case "AVD Partners":
     // No filters for AVD Partners
@@ -612,6 +714,8 @@ function waitHelpToLoad() {
     if (elem) {
       toggleHeader();
       
+// Exécuter la fonction
+adjustCardsForOnHoldStatus();
       let sidebar = createFiltersSidebar();
       applyFilterByPipeline(sidebar);
       console.log("Script started.");
