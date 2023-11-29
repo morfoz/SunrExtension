@@ -308,28 +308,39 @@ function replaceEmojisByImages() {
 function adjustCardsForOnHoldStatus() {
   // Sélectionner toutes les colonnes
   let columns = document.querySelectorAll('div[data-test-id="cdb-column"]');
-  
-  // Itérer sur chaque colonne
   columns.forEach((column) => {
     // Obtenir toutes les cartes de la colonne qui ne sont pas cachées
     let cards = column.querySelectorAll('div[data-test-id="cdb-column-item"]:not([style="display: none;"])');
-    
-    // Itérer sur chaque carte
-    cards.forEach((card) => {
-      // Vérifier si la carte contient la propriété "On hold"
-      var onHoldTag = card.querySelector('.Tags__TagWrapper-ou0fag-0 .UITag__Tag-kcqguc-0');
-      if (onHoldTag && onHoldTag.textContent.includes('❗ On hold ❗')) {
-          // Cacher le tag "On hold"
-          onHoldTag.style.display = 'none';
+        cards.forEach((card) => {
+      let onHoldTag = card.querySelector('[data-component-name="UITag"]');
+      if (onHoldTag) {
+        console.log(card.style.backgroundColor);
+        // Cacher le tag
+        onHoldTag.style.display = 'none';
 
-          // Changer la couleur de fond du premier élément enfant de la carte
-          if (card.firstChild) {
-              card.firstChild.firstChild.firstChild.style.backgroundColor = '#f2dede'; // par exemple, une couleur rouge pâle pour indiquer l'état "On hold"
-          }
+        // Utiliser une instruction switch pour gérer les différents cas
+        switch (onHoldTag.textContent.trim()) {
+          case '❗ On hold ❗':
+            // Changer la couleur de fond pour l'état "On hold"
+            card.firstChild.firstChild.firstChild.style.backgroundColor = '#f2dede';
+            break;
+          case 'AVD Project':
+            // Changer la couleur de fond pour "AVD Project"
+            card.firstChild.firstChild.firstChild.style.backgroundColor = '#E6F8F6';
+            break;
+          case 'AVD Client':
+            // Changer la couleur de fond pour "AVD Client"
+            card.firstChild.firstChild.firstChild.style.backgroundColor = '#F5F0E7aa';
+            break;
+          // Vous pouvez ajouter d'autres cas ici si nécessaire
+        }
       }
     });
   });
 }
+
+
+
 
 
 function toggleHeader() {
@@ -584,28 +595,6 @@ function getCardCropType(card) {
   return projectTypeElement ? projectTypeElement.textContent.trim() : null;
 }
 
-
-function filterCards() {
-  let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
-  let checkedProjectTypes = [...document.querySelectorAll('#filter-by-project-type-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
-  let checkedCropTypes = [...document.querySelectorAll('#filter-by-crop-types-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
-
-  document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
-    let cardCountry = getCardCountry(card);
-    let cardProjectType = getCardProjectType(card);
-    let cardCropType = getCardCropType(card);  // Vous devez créer cette fonction pour obtenir le type de culture d'une carte
-
-    let countryMatch = checkedCountries.includes(cardCountry);
-    let projectTypeMatch = checkedProjectTypes.includes(cardProjectType);
-    let cropTypeMatch = checkedCropTypes.includes(cardCropType);  // Vérifiez si le type de culture de la carte est sélectionné
-
-    card.style.display = (countryMatch && projectTypeMatch && cropTypeMatch) ? 'block' : 'none';  // Ajoutez cropTypeMatch à la condition
-  });
-  calculateAndUpdateTotalPower();
-}
-
-
-
 function filterCardsPVS() {
   let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
   let checkedProjectTypes = [...document.querySelectorAll('#filter-by-project-type-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
@@ -637,23 +626,6 @@ function filterCardsAVD() {
   });
   calculateAndUpdateTotalPower();
 }
-
-
-
-
-//to erase
-function filterCountryCards() {
-  let checkedCountries = [...document.querySelectorAll('#filter-by-country-container input[type="checkbox"]:checked')].map(checkbox => checkbox.id);
-  
-  document.querySelectorAll('[data-test-id="cdb-column-item"]').forEach(card => {
-    let cardCountry = getCardCountry(card);
-    let countryMatch = checkedCountries.includes(cardCountry);
-    card.style.display = (countryMatch) ? 'block' : 'none';
-  });
-  calculateAndUpdateTotalPower();
-}
-
-
 
 function applyFilterByPipeline(sidebar) {
   let pipelineContent = document.querySelector("[data-selenium-test='pipelineSelector'][role='button']").textContent.trim();
