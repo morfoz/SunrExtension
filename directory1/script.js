@@ -330,7 +330,7 @@ function adjustCardsForOnHoldStatus() {
             break;
           case 'AVD Client':
             // Changer la couleur de fond pour "AVD Client"
-            card.firstChild.firstChild.firstChild.style.backgroundColor = '#F5F0E7aa';
+            card.firstChild.firstChild.firstChild.style.backgroundColor = '#F5C26B66';
             break;
           // Vous pouvez ajouter d'autres cas ici si nécessaire
         }
