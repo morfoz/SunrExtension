@@ -673,6 +673,18 @@ function waitCardToLoad() {
   var checkExist = setInterval(function () {
     var elem = document.querySelector('[data-test-id="cdb-column-item"]');
     if (elem) {
+      // Make an horizontal scroll on the board to make appear all cards
+      var element = document.querySelector('[data-test-id="cdb-board-container"]');
+      function scrollRight() {
+          element.scrollBy({ left: 9999 }); // Vous pouvez ajuster la valeur 100 selon vos besoins
+      }
+      // Fonction pour faire défiler vers la gauche
+      function scrollLeft() {
+          element.scrollBy({ left: -9999 }); // La valeur négative fait défiler vers la gauche
+      }
+      // Exécuter les fonctions de défilement
+      scrollRight(); // Fait défiler vers la droite
+      setTimeout(scrollLeft, 5); // Fait défiler vers la gauche après 1 seconde
       toggleDateDisplay();
       
       clearInterval(checkExist);
