@@ -693,7 +693,7 @@ function waitCardToLoad() {
   }, 500);
 }
 
-function waitHelpToLoad() {
+function waitPageToLoad() {
   var checkExist = setInterval(function() {
     var elem = document.querySelector('[data-test-id="cdb-column-body"]');
     if (elem) {
@@ -733,7 +733,7 @@ function waitHelpToLoad() {
 function startAllIntervals() {
   waitMenuToLoad();
   waitCardToLoad();
-  waitHelpToLoad();
+  waitPageToLoad();
 }
 
 // Fetch the 'injectionEnabled' value
