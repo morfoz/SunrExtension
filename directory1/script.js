@@ -430,7 +430,7 @@ function calculateAndUpdateTotalPower() {
 function createFiltersSidebar() {
   let sidebar = document.createElement('div');
   sidebar.id = 'mySidebar';
-  sidebar.style.cssText = 'z-index:1110; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f5; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
+  sidebar.style.cssText = 'z-index:1110; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f599; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
   document.body.appendChild(sidebar);
   
   if(window.location.pathname.endsWith('/board')) {
@@ -652,6 +652,8 @@ function applyFilterByPipeline(sidebar) {
   changeCurrencyUnitInPower();
   handleLabelActions();
   replaceEmojisByImages();
+  adjustCardsForOnHoldStatus();
+  
 }
 
 
