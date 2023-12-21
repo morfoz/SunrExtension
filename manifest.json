@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "H'SunR",
     "description": "CSS for H for sunR",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "permissions": ["activeTab", "scripting","storage"],
     "host_permissions": ["http://*/*", "https://*/*"],
     "background": {
