@@ -673,6 +673,7 @@ function waitCardToLoad() {
   var checkExist = setInterval(function () {
     var elem = document.querySelector('[data-test-id="cdb-column-item"]');
     if (elem) {
+
       // Make an horizontal scroll on the board to make appear all cards
       var element = document.querySelector('[data-test-id="cdb-board-container"]');
       function scrollRight() {
@@ -684,7 +685,7 @@ function waitCardToLoad() {
       }
       // Exécuter les fonctions de défilement
       scrollRight(); // Fait défiler vers la droite
-      setTimeout(scrollLeft, 5); // Fait défiler vers la gauche après 1 seconde
+      setTimeout(scrollLeft, 300); // Fait défiler vers la gauche après 1 seconde
       toggleDateDisplay();
       
       clearInterval(checkExist);
@@ -692,14 +693,14 @@ function waitCardToLoad() {
   }, 500);
 }
 
-function waitHelpToLoad() {
+function waitPageToLoad() {
   var checkExist = setInterval(function() {
-    var elem = document.querySelector("#help-widget-toggle");
+    var elem = document.querySelector('[data-test-id="cdb-column-body"]');
     if (elem) {
       toggleHeader();
       
-// Exécuter la fonction
-adjustCardsForOnHoldStatus();
+      // Exécuter la fonction
+      adjustCardsForOnHoldStatus();
       let sidebar = createFiltersSidebar();
       applyFilterByPipeline(sidebar);
       console.log("Script started.");
@@ -723,16 +724,16 @@ adjustCardsForOnHoldStatus();
             previousValue = currentValue;
           }
         }
-      }, 1000);  // Check every second
+      }, 2000);  // Check every second
       clearInterval(checkExist);
     }
-  }, 500);
+  }, 2000);
 }
 
 function startAllIntervals() {
   waitMenuToLoad();
   waitCardToLoad();
-  waitHelpToLoad();
+  waitPageToLoad();
 }
 
 // Fetch the 'injectionEnabled' value
