@@ -245,7 +245,6 @@ function handleLabelActions() {
         divElement.appendChild(newSpan);
       }
     } else if (label.textContent.trim() === 'Type of crops:') {
-      console.log('here i am')
       label.parentElement.style.display = 'none';
       var valueSpan = label.parentElement.querySelector('span[data-test-id="cdbc-property-value"]');
       var text = valueSpan ? valueSpan.textContent.trim() : '';
@@ -430,7 +429,7 @@ function calculateAndUpdateTotalPower() {
 function createFiltersSidebar() {
   let sidebar = document.createElement('div');
   sidebar.id = 'mySidebar';
-  sidebar.style.cssText = 'z-index:1110; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f599; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
+  sidebar.style.cssText = 'z-index:1110; position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background-color: #f5f5f5dd; padding: 20px; overflow: auto; transition: transform 0.3s ease-out; transform: translateX(100%);';
   document.body.appendChild(sidebar);
   
   if(window.location.pathname.endsWith('/board')) {
@@ -497,6 +496,7 @@ function createFilterControls(sidebar, titleText, items, countFunction, imagePai
   container.appendChild(title);
   
   items.forEach(item => {
+    waitCardToLoad()
     let itemCount = countFunction(item);
     
     // Ne pas créer de contrôle pour les éléments avec un compte de 0
@@ -591,7 +591,6 @@ function getCardProjectType(card) {
 
 function getCardCropType(card) {
   let projectTypeElement = card.querySelector('[data-test-id="cdbc-property-1"] [data-test-id="cdbc-property-value"] span');
-  console.log(projectTypeElement)
   return projectTypeElement ? projectTypeElement.textContent.trim() : null;
 }
 
@@ -653,7 +652,6 @@ function applyFilterByPipeline(sidebar) {
   handleLabelActions();
   replaceEmojisByImages();
   adjustCardsForOnHoldStatus();
-  
 }
 
 
